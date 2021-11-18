@@ -1,0 +1,35 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net461</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Authors>Soapbox Race World - Launcher Division</Authors>
+    <Company>Soapbox Race World</Company>
+    <PackageProjectUrl>https://github.com/SoapboxRaceWorld</PackageProjectUrl>
+    <Version>0.0.01</Version>
+    <Description>A Game Launchers Discord RPC Library built within the .NET Framework</Description>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>Discord,RPC</PackageTags>
+    <RepositoryUrl>https://github.com/DavidCarbon-SBRW/SBRW.Launcher.Core.Discord</RepositoryUrl>
+    <PackageIcon>Logo-Full-Size.png</PackageIcon>
+    <PackageIconUrl />
+    <Copyright>© Soapbox Race World</Copyright>
+    <NeutralLanguage>en</NeutralLanguage>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="DiscordRichPresence" Version="1.0.175" />
+    <PackageReference Include="Flurl.Http" Version="3.2.0" />
+    <PackageReference Include="ini-parser" Version="2.5.2" />
+    <PackageReference Include="Nancy.Hosting.Self" Version="2.0.0" />
+    <PackageReference Include="SBRW.Launcher.Core" Version="0.0.14-preview001" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Resources\Icon\Logo-Full-Size.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+  </ItemGroup>
+
+</Project>
