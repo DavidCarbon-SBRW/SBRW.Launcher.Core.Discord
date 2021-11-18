@@ -22,7 +22,7 @@ jobs:
       env:
         PrivateNuGetUrl: ${{ secrets.SBRW_LIBRARIES_LAUNCHER_NUGET_URL }}
         GHUserName: ${{ secrets.SBRW_LIBRARIES_LAUNCHER_USERNAME }}
-        Password: ${{ secrets.GITHUB_TOKEN }}      
+        Password: ${{ secrets.GITHUB_TOKEN }}
     - name: Build
       run: dotnet build --configuration Release /p:Version=${VERSION}      
     - name: Pack
