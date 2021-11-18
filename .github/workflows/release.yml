@@ -15,14 +15,9 @@ jobs:
       run: git branch --remote --contains | grep origin/release
     - name: Set VERSION variable from tag
       run: echo "VERSION=${GITHUB_REF/refs\/tags\/v/}" >> $GITHUB_ENV
-    - name: Setup NuGet
-      uses: NuGet/setup-nuget@v1.0.5
-      with:
-        nuget-version: 'latest'      
-    - name: Restore NuGet Packages
+    - name: Set Custom NuGet Packages
       run: |
-        nuget sources add -name "SBRW Launcher Libraries" -Source ${env:PrivateNuGetUrl} -Username ${env:GHUserName} -Password ${env:Password}
-        nuget restore SBRW.Launcher.Core.Discord.sln
+        dotnet nuget add source ${env:PrivateNuGetUrl} -n "SBRW Launcher Libraries" -u ${env:GHUserName} -p ${env:Password}
       env:
         PrivateNuGetUrl: ${{ secrets.SBRW_LIBRARIES_LAUNCHER_NUGET_URL }}
         GHUserName: ${{ secrets.SBRW_LIBRARIES_LAUNCHER_USERNAME }}
