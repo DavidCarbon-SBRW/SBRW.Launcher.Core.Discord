@@ -13,7 +13,7 @@ jobs:
       run: echo "VERSION=${GITHUB_REF/refs\/tags\/v/}" >> $GITHUB_ENV 
     - name: Set Custom NuGet Packages
       run: |
-        dotnet nuget add source ${PrivateNuGetUrl} -n "SBRW Launcher Libraries" -u ${GHUserName} -p ${Password}
+        dotnet nuget add source ${PrivateNuGetUrl} -n "SBRW Launcher Libraries" -u ${GHUserName} -p ${Password} --store-password-in-clear-text
       env:
         PrivateNuGetUrl: ${{ secrets.SBRW_LIBRARIES_LAUNCHER_NUGET_URL }}
         GHUserName: ${{ secrets.SBRW_LIBRARIES_LAUNCHER_USERNAME }}
