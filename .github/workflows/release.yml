@@ -16,7 +16,8 @@ jobs:
     - name: Set VERSION variable from tag
       run: echo "VERSION=${GITHUB_REF/refs\/tags\/v/}" >> $GITHUB_ENV
     - name: Set Custom NuGet Packages
-      run: dotnet nuget add source ${env:PrivateNuGetUrl} -n "SBRW Launcher Libraries" -u ${env:GHUserName} -p ${env:Password}
+      run: |
+        dotnet nuget add source ${env:PrivateNuGetUrl} -n "SBRW Launcher Libraries" -u ${env:GHUserName} -p ${env:Password}
       env:
         PrivateNuGetUrl: ${{ secrets.SBRW_LIBRARIES_LAUNCHER_NUGET_URL }}
         GHUserName: ${{ secrets.SBRW_LIBRARIES_LAUNCHER_USERNAME }}
