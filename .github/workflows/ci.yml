@@ -12,6 +12,18 @@ jobs:
     steps:
     - name: Branch Checkout
       uses: actions/checkout@v2.4.0
+    - name: Setup NuGet
+      uses: NuGet/setup-nuget@v1.0.5
+      with:
+        nuget-version: 'latest'      
+    - name: Restore NuGet Packages
+      run: |
+        nuget sources add -name "SBRW Launcher Libraries" -Source ${env:PrivateNuGetUrl} -Username ${env:GHUserName} -Password ${env:Password}
+        nuget restore SBRW.Launcher.Core.Discord.sln
+      env:
+        PrivateNuGetUrl: ${{ secrets.SBRW_LIBRARIES_LAUNCHER_NUGET_URL }}
+        GHUserName: ${{ secrets.SBRW_LIBRARIES_LAUNCHER_USERNAME }}
+        Password: ${{ secrets.GITHUB_TOKEN }}
     - name: Build
       run: dotnet build --configuration Release
     - name: Test
