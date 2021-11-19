@@ -20,7 +20,7 @@ jobs:
         GHUserName: ${{ secrets.SBRW_LIBRARIES_LAUNCHER_USERNAME }}
         Password: ${{ secrets.SBRW_LIBRARIES_LAUNCHER_OUTHTOKEN }}
     - name: Restore Custom NuGet Packages
-      run: dotnet restore --ignore-failed-sources --verbosity detailed
+      run: dotnet restore --ignore-failed-sources
     - name: Build
       run: dotnet build --configuration Release
     - name: Test

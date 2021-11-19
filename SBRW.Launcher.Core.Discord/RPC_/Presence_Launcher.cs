@@ -4,18 +4,20 @@ using DiscordRPC;
 using SBRW.Launcher.Core.Classes.Cache;
 using SBRW.Launcher.Core.Classes.Extension.Logging_;
 using SBRW.Launcher.Core.Classes.Required.Certificate;
-using SBRW.Launcher.Core.Extras.FileReadWrite_;
 using DiscordButton = DiscordRPC.Button;
 
-namespace SBRW.Launcher.Core.Discord.Discord_.RPC_
+namespace SBRW.Launcher.Core.Discord.RPC_
 {
+    /// <summary>
+    /// Discord RPC Set from Launcher Side
+    /// </summary>
     public class Presence_Launcher
     {
         /// <summary>
         /// Launcher's Discord RPC Client
         /// </summary>
         /// <remarks>Discord RPC Client</remarks>
-        public static DiscordRpcClient Client;
+        public static DiscordRpcClient Client { get; set; }
 
         /// <summary>
         /// Boolean Value on If RPC is Running
@@ -27,19 +29,19 @@ namespace SBRW.Launcher.Core.Discord.Discord_.RPC_
         /// Launcher's Discord Presence To Show Statuss
         /// </summary>
         /// <remarks>Instance of Discord Presence</remarks>
-        public static RichPresence Presence = new RichPresence();
+        public static RichPresence Presence { get; set; } = new RichPresence();
 
         /// <summary>
         /// Used to Set Discord Buttons on RPC Status
         /// </summary>
         /// <remarks>Instance of Discord Buttons</remarks>
-        public static List<DiscordButton> ButtonsList = new List<DiscordButton>();
+        public static List<DiscordButton> ButtonsList { get; set; } = new List<DiscordButton>();
 
         /// <summary>
         /// Used to prevent Displaying RPC when there is an Error (Displays a Simple Error Message in RPC)
         /// </summary>
         /// <remarks>Displays Launcher Errors in RPC</remarks>
-        public static bool Download = true;
+        public static bool Download { get; set; } = true;
 
         /// <summary>
         /// Sets the current Status of the Launcher's State

@@ -1,0 +1,145 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>SBRW.Launcher.Core.Discord</name>
+    </assembly>
+    <members>
+        <member name="T:SBRW.Launcher.Core.Discord.Reference_.List_.Cars">
+            <summary>
+            Remote/Local RPC Cars File
+            </summary>
+        </member>
+        <member name="P:SBRW.Launcher.Core.Discord.Reference_.List_.Cars.List">
+            <summary>
+            Cached List for Car ID/Names
+            </summary>
+        </member>
+        <member name="M:SBRW.Launcher.Core.Discord.Reference_.List_.Cars.Get_Name(System.String)">
+            <summary>
+            Searches for the Name of a Car
+            </summary>
+            <param name="Car_Id">Cars ID</param>
+            <returns>Car Name</returns>
+        </member>
+        <member name="T:SBRW.Launcher.Core.Discord.Reference_.List_.Events">
+            <summary>
+            Remote/Local RPC Events File
+            </summary>
+        </member>
+        <member name="P:SBRW.Launcher.Core.Discord.Reference_.List_.Events.List">
+            <summary>
+            Cached List for Events ID/Names
+            </summary>
+        </member>
+        <member name="M:SBRW.Launcher.Core.Discord.Reference_.List_.Events.Get_Name(System.Int32)">
+            <summary>
+            Searches the name of the event
+            </summary>
+            <param name="Event_Id">Event ID Number</param>
+            <returns>Event Name</returns>
+        </member>
+        <member name="M:SBRW.Launcher.Core.Discord.Reference_.List_.Events.Get_Type(System.Int32)">
+            <summary>
+            Searches the type of event
+            </summary>
+            <param name="Event_Id">Event ID Number</param>
+            <returns>Event Type</returns>
+        </member>
+        <member name="T:SBRW.Launcher.Core.Discord.RPC_.Presence_Game">
+            <summary>
+            Discord RPC Set from Server Side
+            </summary>
+        </member>
+        <member name="M:SBRW.Launcher.Core.Discord.RPC_.Presence_Game.State(System.String,System.String,System.Object)">
+            <summary>
+            Game Status State
+            </summary>
+            <param name="Uri">Address Path</param>
+            <param name="Server_Reply">XML string File</param>
+            <param name="GET">Sub-Path in Address Path</param>
+        </member>
+        <member name="T:SBRW.Launcher.Core.Discord.RPC_.Presence_Launcher">
+            <summary>
+            Discord RPC Set from Launcher Side
+            </summary>
+        </member>
+        <member name="P:SBRW.Launcher.Core.Discord.RPC_.Presence_Launcher.Client">
+            <summary>
+            Launcher's Discord RPC Client
+            </summary>
+            <remarks>Discord RPC Client</remarks>
+        </member>
+        <member name="M:SBRW.Launcher.Core.Discord.RPC_.Presence_Launcher.Running">
+            <summary>
+            Boolean Value on If RPC is Running
+            </summary>
+            <returns>True or False</returns>
+        </member>
+        <member name="P:SBRW.Launcher.Core.Discord.RPC_.Presence_Launcher.Presence">
+            <summary>
+            Launcher's Discord Presence To Show Statuss
+            </summary>
+            <remarks>Instance of Discord Presence</remarks>
+        </member>
+        <member name="P:SBRW.Launcher.Core.Discord.RPC_.Presence_Launcher.ButtonsList">
+            <summary>
+            Used to Set Discord Buttons on RPC Status
+            </summary>
+            <remarks>Instance of Discord Buttons</remarks>
+        </member>
+        <member name="P:SBRW.Launcher.Core.Discord.RPC_.Presence_Launcher.Download">
+            <summary>
+            Used to prevent Displaying RPC when there is an Error (Displays a Simple Error Message in RPC)
+            </summary>
+            <remarks>Displays Launcher Errors in RPC</remarks>
+        </member>
+        <member name="M:SBRW.Launcher.Core.Discord.RPC_.Presence_Launcher.Status(System.String,System.String)">
+            <summary>
+            Sets the current Status of the Launcher's State
+            </summary>
+            <remarks>RPC Status</remarks>
+            <param name="State">Which RPC Status Text to Set</param>
+            <param name="Status">Additional RPC Status Details to Display</param>
+        </member>
+        <member name="M:SBRW.Launcher.Core.Discord.RPC_.Presence_Launcher.Start(System.String,System.String)">
+            <summary>
+            Starts Game Launcher's RPC Status. If a Discord Client is Running on the Machine, it will Display the status on the User's Profile.
+            </summary>
+            <remarks>Displays Launcher and Server Status</remarks>
+        </member>
+        <member name="M:SBRW.Launcher.Core.Discord.RPC_.Presence_Launcher.Update">
+            <summary>
+            Invokes a new Instance of RPC
+            </summary>
+            <remarks>Starts a new RPC for Launcher</remarks>
+        </member>
+        <member name="M:SBRW.Launcher.Core.Discord.RPC_.Presence_Launcher.Stop(System.String)">
+            <summary>
+            Invokes a Stop Command to RPC by Clearing Current Status before Disposing RPC
+            </summary>
+            <remarks>Clears and Stops RPC</remarks>
+        </member>
+        <member name="M:SBRW.Launcher.Core.Discord.RPC_.Presence_Launcher.ApplicationID">
+            <summary>
+            Retives Discord Application ID by first checking the Server JSON, with the Server List being Second, and the Fallback being the Launcher's ID
+            </summary>
+            <remarks>Server's Discord Application ID</remarks>
+        </member>
+        <member name="T:SBRW.Launcher.Core.Discord.RPC_.Presence_Settings">
+            <summary>
+            Discord RPC Local Settings
+            </summary>
+        </member>
+        <member name="P:SBRW.Launcher.Core.Discord.RPC_.Presence_Settings.Launcher_Version">
+            <summary>
+            Launcher Version
+            </summary>
+            <returns>Application Version</returns>
+        </member>
+        <member name="P:SBRW.Launcher.Core.Discord.RPC_.Presence_Settings.Disable_RPC_Startup">
+            <summary>
+            Prevents RPC from Starting Up
+            </summary>
+        </member>
+    </members>
+</doc>
