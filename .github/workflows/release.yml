@@ -22,6 +22,8 @@ jobs:
         PrivateNuGetUrl: ${{ secrets.SBRW_LIBRARIES_LAUNCHER_NUGET_URL }}
         GHUserName: ${{ secrets.SBRW_LIBRARIES_LAUNCHER_USERNAME }}
         Password: ${{ secrets.GITHUB_TOKEN }}
+    - name: Restore Custom NuGet Packages
+      run: dotnet restore --ignore-failed-sources
     - name: Build
       run: dotnet build --configuration Release /p:Version=${VERSION}
     - name: Test

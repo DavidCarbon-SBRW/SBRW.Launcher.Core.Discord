@@ -6,7 +6,7 @@
     <Authors>Soapbox Race World - Launcher Division</Authors>
     <Company>Soapbox Race World</Company>
     <PackageProjectUrl>https://github.com/SoapboxRaceWorld</PackageProjectUrl>
-    <Version>0.0.0002.0004</Version>
+    <Version>0.0.0002.0005</Version>
     <Description>A Game Launchers Discord RPC Library built within the .NET Framework</Description>
     <RepositoryType>git</RepositoryType>
     <PackageTags>Discord,RPC</PackageTags>
@@ -15,6 +15,14 @@
     <PackageIconUrl />
     <Copyright>© Soapbox Race World</Copyright>
     <NeutralLanguage>en</NeutralLanguage>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>F:\GitHub Projects\SBRW.Launcher.Core.Discord\SBRW.Launcher.Core.Discord\SBRW.Launcher.Core.Discord.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DocumentationFile>F:\GitHub Projects\SBRW.Launcher.Core.Discord\SBRW.Launcher.Core.Discord\SBRW.Launcher.Core.Discord.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
