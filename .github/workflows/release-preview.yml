@@ -25,7 +25,7 @@ jobs:
     - name: Pack
       run: dotnet pack --configuration Release /p:Version=${VERSION} --no-build --output .
     - name: Push
-      run: dotnet nuget push SBRW.Launcher.Core.${VERSION}.nupkg --source ${NUGET_URL} --api-key ${GITHUB_TOKEN}
+      run: dotnet nuget push SBRW.Launcher.Core.Discord.${VERSION}.nupkg --source ${NUGET_URL} --api-key ${GITHUB_TOKEN}
       env:
         NUGET_URL: ${{ secrets.SBRW_LIBRARIES_LAUNCHER_NUGET_URL }}
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
