@@ -19,7 +19,7 @@ jobs:
         GHUserName: ${{ secrets.SBRW_LIBRARIES_LAUNCHER_USERNAME }}
         Password: ${{ secrets.GITHUB_TOKEN }}
     - name: Restore Custom NuGet Packages
-      run: dotnet restore --ignore-failed-sources  
+      run: dotnet restore --ignore-failed-sources --prerelease
     - name: Build
       run: dotnet build --configuration Release /p:Version=${VERSION}      
     - name: Pack
