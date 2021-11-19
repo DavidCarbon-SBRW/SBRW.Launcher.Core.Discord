@@ -1,7 +1,10 @@
 ﻿using SBRW.Launcher.Core.Classes.Extension.Web_;
 
-namespace SBRW.Launcher.Core.Discord.Discord_.RPC_
+namespace SBRW.Launcher.Core.Discord.RPC_
 {
+    /// <summary>
+    /// Discord RPC Local Settings
+    /// </summary>
     public class Presence_Settings
     {
         /// <summary>
