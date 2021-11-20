@@ -1,4 +1,5 @@
 ﻿using SBRW.Launcher.Core.Classes.Extension.Web_;
+using SBRW.Launcher.Core.Discord.Reference_.List_;
 
 namespace SBRW.Launcher.Core.Discord.RPC_
 {
@@ -16,5 +17,14 @@ namespace SBRW.Launcher.Core.Discord.RPC_
         /// Prevents RPC from Starting Up
         /// </summary>
         public static bool Disable_RPC_Startup { get; set; }
+        /// <summary>
+        /// Clears and Resets Cached RPC Lists for Cars and Events
+        /// </summary>
+        public static void Clear_RPC_List()
+        {
+            Cars.List_File = Events.List_File = string.Empty;
+            Cars.List_Cached.Clear();
+            Events.List_Cached.Clear();
+        }
     }
 }

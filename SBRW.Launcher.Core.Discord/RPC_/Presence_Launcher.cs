@@ -310,7 +310,7 @@ namespace SBRW.Launcher.Core.Discord.RPC_
                     }
                     else if (State == "In-Game")
                     {
-                        Presence.State = "TO DO";//ServerListUpdater.ServerName("RPC");
+                        Presence.State = Launcher_Value.Game_Server_Name;
                         Presence.Details = "In-Game";
                         Presence.Assets = new Assets
                         {

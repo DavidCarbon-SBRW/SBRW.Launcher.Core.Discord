@@ -1,7 +1,10 @@
 ﻿using Newtonsoft.Json;
 using SBRW.Launcher.Core.Classes.Extension.String_;
-using SBRW.Launcher.Core.Extras.FileReadWrite_;
+using SBRW.Launcher.Core.Discord.FileReadWrite_;
 using System;
+using SBRW.Launcher.Core.Classes.Extension.Logging_;
+using System.Collections.Generic;
+using SBRW.Launcher.Core.Discord.Reference_.Json_;
 
 namespace SBRW.Launcher.Core.Discord.Reference_.List_
 {
@@ -13,7 +16,8 @@ namespace SBRW.Launcher.Core.Discord.Reference_.List_
         /// <summary>
         /// Cached List for Car ID/Names
         /// </summary>
-        public static string List { get; set; }
+        public static string List_File { get; set; }
+        internal static List<Formats.Car> List_Cached { get; set; }
         /// <summary>
         /// Searches for the Name of a Car
         /// </summary>
@@ -21,31 +25,29 @@ namespace SBRW.Launcher.Core.Discord.Reference_.List_
         /// <returns>Car Name</returns>
         public static string Get_Name(string Car_Id)
         {
-            /* Let's load the "Cached From Server" version first */
-            if (!string.IsNullOrWhiteSpace(List))
+            try
             {
-                dynamic Remote_Json = JsonConvert.DeserializeObject(Strings.Encode(List));
-
-                foreach (dynamic List_Item in Remote_Json)
+                /* Let's load the "Cached From Server" version first and If we don't have a Server version, load "default" version */
+                if (List_Cached == null || List_Cached.Count <= 0)
                 {
-                    if (List_Item.carid == Car_Id)
-                    {
-                        return List_Item.carname;
-                    }
+                    List_Cached = new List<Formats.Car>();
+                    List_Cached.AddRange(
+                        JsonConvert.DeserializeObject<List<Formats.Car>>
+                        (Strings.Encode(
+                            !string.IsNullOrWhiteSpace(List_File) ? List_File :
+                            Extract_Resource.AsString("SBRW.Launcher.Core.Extras.Discord_.Reference_.Json_.Cars.json"))));
+                }
+
+                int Results_Index = List_Cached.FindIndex(i => string.Equals(i.carid, Car_Id));
+
+                if (Results_Index >= 0)
+                {
+                    return List_Cached.Find(i => string.Equals(i.carid, Car_Id)).carname;
                 }
             }
-            /* If we don't have a Server version, load "default" version */
-            else
+            catch (Exception Error)
             {
-                dynamic Local_Json = JsonConvert.DeserializeObject(Strings.Encode(Extract_Resource.AsString("SBRW.Launcher.Core.Extras.Discord_.Reference_.Json_.Cars.json")));
-
-                foreach (dynamic List_Item in Local_Json)
-                {
-                    if (List_Item.carid == Car_Id)
-                    {
-                        return List_Item.carname;
-                    }
-                }
+                Log_Detail.OpenLog("Car Name RPC Search", null, Error, null, true);
             }
 
             /* And if it's not found, do this instead */
