@@ -4,12 +4,52 @@
         <name>SBRW.Launcher.Core.Discord</name>
     </assembly>
     <members>
+        <member name="T:SBRW.Launcher.Core.Discord.Reference_.Json_.Formats">
+            <summary>
+            Source Class for Local JSON Formats
+            </summary>
+        </member>
+        <member name="T:SBRW.Launcher.Core.Discord.Reference_.Json_.Formats.Car">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SBRW.Launcher.Core.Discord.Reference_.Json_.Formats.Car.carid">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SBRW.Launcher.Core.Discord.Reference_.Json_.Formats.Car.carname">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:SBRW.Launcher.Core.Discord.Reference_.Json_.Formats.Event">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SBRW.Launcher.Core.Discord.Reference_.Json_.Formats.Event.id">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SBRW.Launcher.Core.Discord.Reference_.Json_.Formats.Event.trackname">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SBRW.Launcher.Core.Discord.Reference_.Json_.Formats.Event.type">
+            <summary>
+            
+            </summary>
+        </member>
         <member name="T:SBRW.Launcher.Core.Discord.Reference_.List_.Cars">
             <summary>
             Remote/Local RPC Cars File
             </summary>
         </member>
-        <member name="P:SBRW.Launcher.Core.Discord.Reference_.List_.Cars.List">
+        <member name="P:SBRW.Launcher.Core.Discord.Reference_.List_.Cars.List_File">
             <summary>
             Cached List for Car ID/Names
             </summary>
@@ -26,7 +66,7 @@
             Remote/Local RPC Events File
             </summary>
         </member>
-        <member name="P:SBRW.Launcher.Core.Discord.Reference_.List_.Events.List">
+        <member name="P:SBRW.Launcher.Core.Discord.Reference_.List_.Events.List_File">
             <summary>
             Cached List for Events ID/Names
             </summary>
@@ -139,6 +179,11 @@
         <member name="P:SBRW.Launcher.Core.Discord.RPC_.Presence_Settings.Disable_RPC_Startup">
             <summary>
             Prevents RPC from Starting Up
+            </summary>
+        </member>
+        <member name="M:SBRW.Launcher.Core.Discord.RPC_.Presence_Settings.Clear_RPC_List">
+            <summary>
+            Clears and Resets Cached RPC Lists for Cars and Events
             </summary>
         </member>
     </members>

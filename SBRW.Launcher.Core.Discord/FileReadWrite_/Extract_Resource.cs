@@ -3,7 +3,7 @@ using System;
 using System.IO;
 using System.Reflection;
 
-namespace SBRW.Launcher.Core.Extras.FileReadWrite_
+namespace SBRW.Launcher.Core.Discord.FileReadWrite_
 {
     internal class Extract_Resource
     {

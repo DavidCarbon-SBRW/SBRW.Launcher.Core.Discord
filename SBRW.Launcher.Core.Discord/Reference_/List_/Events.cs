@@ -1,6 +1,8 @@
 ﻿using Newtonsoft.Json;
 using SBRW.Launcher.Core.Classes.Extension.String_;
-using SBRW.Launcher.Core.Extras.FileReadWrite_;
+using SBRW.Launcher.Core.Discord.Reference_.Json_;
+using SBRW.Launcher.Core.Discord.FileReadWrite_;
+using System.Collections.Generic;
 
 namespace SBRW.Launcher.Core.Discord.Reference_.List_
 {
@@ -12,7 +14,8 @@ namespace SBRW.Launcher.Core.Discord.Reference_.List_
         /// <summary>
         /// Cached List for Events ID/Names
         /// </summary>
-        public static string List { get; set; }
+        public static string List_File { get; set; }
+        internal static List<Formats.Event> List_Cached { get; set; }
         /// <summary>
         /// Searches the name of the event
         /// </summary>
@@ -20,32 +23,22 @@ namespace SBRW.Launcher.Core.Discord.Reference_.List_
         /// <returns>Event Name</returns>
         public static string Get_Name(int Event_Id)
         {
-            /* Let's load the "From Server" version first */
-            if (!string.IsNullOrWhiteSpace(List))
+            /* Let's load the "Cached From Server" version first and If we don't have a Server version, load "default" version */
+            if (List_Cached == null || List_Cached.Count <= 0)
             {
-                dynamic Remote_Json = JsonConvert.DeserializeObject(Strings.Encode(List));
-
-                foreach (dynamic List_Item in Remote_Json)
-                {
-                    if (List_Item.id == Event_Id)
-                    {
-                        return List_Item.trackname;
-                    }
-                }
+                List_Cached = new List<Formats.Event>();
+                List_Cached.AddRange(
+                    JsonConvert.DeserializeObject<List<Formats.Event>>
+                    (Strings.Encode(
+                        !string.IsNullOrWhiteSpace(List_File) ? List_File :
+                        Extract_Resource.AsString("SBRW.Launcher.Core.Discord.Reference_.Json_.Events.json"))));
             }
-            /* If we don't have a Server version, load "default" version */
-            else
-            {
-                dynamic dynJson = JsonConvert.DeserializeObject(Strings.Encode(
-                    Extract_Resource.AsString("SBRW.Launcher.Core.Extras.Discord_.Reference_.Json_.Events.json")));
 
-                foreach (dynamic List_Item in dynJson)
-                {
-                    if (List_Item.id == Event_Id)
-                    {
-                        return List_Item.trackname;
-                    }
-                }
+            int Results_Index = List_Cached.FindIndex(i => Equals(i.id, Event_Id));
+
+            if (Results_Index >= 0)
+            {
+                return List_Cached.Find(i => Equals(i.id, Event_Id)).trackname;
             }
 
             /* And if it's not found, do this instead */
@@ -58,32 +51,22 @@ namespace SBRW.Launcher.Core.Discord.Reference_.List_
         /// <returns>Event Type</returns>
         public static string Get_Type(int Event_Id)
         {
-            /* Let's load the "From Server" version first */
-            if (!string.IsNullOrWhiteSpace(List))
+            /* Let's load the "Cached From Server" version first and If we don't have a Server version, load "default" version */
+            if (List_Cached == null || List_Cached.Count <= 0)
             {
-                dynamic Remote_Json = JsonConvert.DeserializeObject(Strings.Encode(List));
-
-                foreach (dynamic List_Item in Remote_Json)
-                {
-                    if (List_Item.id == Event_Id)
-                    {
-                        return List_Item.type;
-                    }
-                }
+                List_Cached = new List<Formats.Event>();
+                List_Cached.AddRange(
+                    JsonConvert.DeserializeObject<List<Formats.Event>>
+                    (Strings.Encode(
+                        !string.IsNullOrWhiteSpace(List_File) ? List_File :
+                        Extract_Resource.AsString("SBRW.Launcher.Core.Discord.Reference_.Json_.Events.json"))));
             }
-            /* If we don't have a Server version, load "default" version */
-            else
-            {
-                dynamic Remote_Json = JsonConvert.DeserializeObject(Strings.Encode(
-                    Extract_Resource.AsString("SBRW.Launcher.Core.Extras.Discord_.Reference_.Json_.Events.json")));
 
-                foreach (dynamic List_Item in Remote_Json)
-                {
-                    if (List_Item.id == Event_Id)
-                    {
-                        return List_Item.type;
-                    }
-                }
+            int Results_Index = List_Cached.FindIndex(i => Equals(i.id, Event_Id));
+
+            if (Results_Index >= 0)
+            {
+                return List_Cached.Find(i => Equals(i.id, Event_Id)).type;
             }
 
             /* And if it's not found, do this instead */

@@ -1,13 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net461</TargetFramework>
+    <TargetFrameworks>netstandard2.0;net461;net472</TargetFrameworks>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Authors>Soapbox Race World - Launcher Division</Authors>
     <Company>Soapbox Race World</Company>
     <PackageProjectUrl>https://github.com/SoapboxRaceWorld</PackageProjectUrl>
-    <Version>0.0.0005</Version>
-    <Description>A Game Launchers Discord RPC Library built within the .NET Framework</Description>
+    <Version>0.0.0006</Version>
+    <Description>A Game Launchers Discord RPC Library built within the .NET Standard Framework</Description>
     <RepositoryType>git</RepositoryType>
     <PackageTags>Discord,RPC</PackageTags>
     <RepositoryUrl>https://github.com/DavidCarbon-SBRW/SBRW.Launcher.Core.Discord</RepositoryUrl>
@@ -24,12 +24,10 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <DocumentationFile>F:\GitHub Projects\SBRW.Launcher.Core.Discord\SBRW.Launcher.Core.Discord\SBRW.Launcher.Core.Discord.xml</DocumentationFile>
   </PropertyGroup>
-
+  
   <ItemGroup>
     <PackageReference Include="DiscordRichPresence" Version="1.0.175" />
-    <PackageReference Include="Flurl.Http" Version="3.2.0" />
-    <PackageReference Include="ini-parser" Version="2.5.2" />
-    <PackageReference Include="Nancy.Hosting.Self" Version="2.0.0" />
+	<PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="SBRW.Launcher.Core" Version="0.0.15-preview001" />
   </ItemGroup>
 
