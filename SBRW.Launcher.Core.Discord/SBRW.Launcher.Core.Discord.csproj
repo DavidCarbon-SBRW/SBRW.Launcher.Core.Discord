@@ -15,6 +15,7 @@
     <PackageIconUrl />
     <Copyright>© Soapbox Race World</Copyright>
     <NeutralLanguage>en</NeutralLanguage>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -27,8 +28,8 @@
   
   <ItemGroup>
     <PackageReference Include="DiscordRichPresence" Version="1.0.175" />
-	<PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
-    <PackageReference Include="SBRW.Launcher.Core" Version="0.0.15-preview001" />
+    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+    <PackageReference Include="SBRW.Launcher.Core" Version="0.0.18" />
   </ItemGroup>
 
   <ItemGroup>

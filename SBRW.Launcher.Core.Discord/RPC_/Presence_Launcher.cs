@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using DiscordRPC;
 using SBRW.Launcher.Core.Classes.Cache;
 using SBRW.Launcher.Core.Classes.Extension.Logging_;
+using SBRW.Launcher.Core.Classes.Extension.Security_;
 using SBRW.Launcher.Core.Classes.Required.Certificate;
 using DiscordButton = DiscordRPC.Button;
 
@@ -220,8 +221,8 @@ namespace SBRW.Launcher.Core.Discord.RPC_
                         {
                             LargeImageText = "Launcher",
                             LargeImageKey = "nfsw",
-                            /*SmallImageText = SecurityCenter.SecurityCenterRPC(1),
-                            SmallImageKey = SecurityCenter.SecurityCenterRPC(0)*/
+                            SmallImageText = Security_Center_Conversion.RPC(Launcher_Value.Launcher_Security_Center_Codes, false),
+                            SmallImageKey = Security_Center_Conversion.RPC(Launcher_Value.Launcher_Security_Center_Codes)
                         };
                     }
                     else if (State == "Register")

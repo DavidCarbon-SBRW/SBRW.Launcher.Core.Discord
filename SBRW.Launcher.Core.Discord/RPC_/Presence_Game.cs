@@ -46,7 +46,7 @@ namespace SBRW.Launcher.Core.Discord.RPC_
         {
             try
             {
-                foreach (var param in GET)
+                foreach (dynamic param in GET)
                 {
                     dynamic value = GET[param];
                     QueryParams[param] = value;
