@@ -9,7 +9,7 @@
     <Version>0.0.0009</Version>
     <Description>A Game Launchers Discord RPC Library built within the .NET Standard Framework</Description>
     <RepositoryType>git</RepositoryType>
-    <PackageTags>Discord,RPC</PackageTags>
+    <PackageTags>Discord, RPC</PackageTags>
     <RepositoryUrl>https://github.com/DavidCarbon-SBRW/SBRW.Launcher.Core.Discord</RepositoryUrl>
     <PackageIcon>Logo_512.png</PackageIcon>
     <PackageIconUrl />
@@ -23,23 +23,21 @@
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <!-- Optional: Include symbols files if Self-Hosted Nuget Feed does not support symbol packages
+    <!-- Optional: Include symbols files if Self-Hosted Nuget Feed does not support symbol packages 
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
     -->
+    <DebugType>embedded</DebugType>
+    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   
   <ItemGroup>
     <PackageReference Include="DiscordRichPresence" Version="1.0.175" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="SBRW.Launcher.Core" Version="0.0.19" />
+    <PackageReference Include="SBRW.Launcher.Core" Version="0.0.20" />
   </ItemGroup>
-
+  
   <ItemGroup>
-    <None Include="Resources\Icon\Logo-Full-Size.png">
+    <None Include="Resources\Icon\Logo_512.png">
       <Pack>True</Pack>
       <PackagePath></PackagePath>
     </None>
