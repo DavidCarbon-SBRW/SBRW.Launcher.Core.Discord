@@ -1,5 +1,5 @@
 ﻿using Newtonsoft.Json;
-using SBRW.Launcher.Core.Classes.Extension.String_;
+using SBRW.Launcher.Core.Extension.String_;
 using SBRW.Launcher.Core.Discord.Reference_.Json_;
 using SBRW.Launcher.Core.Discord.FileReadWrite_;
 using System.Collections.Generic;
