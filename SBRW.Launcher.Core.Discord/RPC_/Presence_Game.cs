@@ -2,14 +2,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using SBRW.Launcher.Core.Classes.Cache;
-using SBRW.Launcher.Core.Classes.Required.Anti_Cheat;
+using SBRW.Launcher.Core.Cache;
+using SBRW.Launcher.Core.Required.Anti_Cheat;
 using System.Text.RegularExpressions;
 using System.Xml;
 using DiscordButton = DiscordRPC.Button;
-using SBRW.Launcher.Core.Classes.Extension.Logging_;
+using SBRW.Launcher.Core.Extension.Logging_;
 using SBRW.Launcher.Core.Discord.Reference_.List_;
-using SBRW.Launcher.Core.Classes.Extension.String_;
+using SBRW.Launcher.Core.Extension.String_;
 
 namespace SBRW.Launcher.Core.Discord.RPC_
 {

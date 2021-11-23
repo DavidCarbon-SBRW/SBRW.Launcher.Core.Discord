@@ -1,4 +1,4 @@
-﻿using SBRW.Launcher.Core.Classes.Extension.Web_;
+﻿using SBRW.Launcher.Core.Extension.Web_;
 using SBRW.Launcher.Core.Discord.Reference_.List_;
 
 namespace SBRW.Launcher.Core.Discord.RPC_
