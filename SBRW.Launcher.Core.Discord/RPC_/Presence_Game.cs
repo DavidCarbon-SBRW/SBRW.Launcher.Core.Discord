@@ -426,7 +426,7 @@ namespace SBRW.Launcher.Core.Discord.RPC_
                         {
                             if (DefaultID == current)
                             {
-                                Launcher_Value.Game_Car_Name = Strings.Encode(node.SelectSingleNode("CustomCar/Name").InnerText);
+                                Launcher_Value.Game_Car_Name = Cars.Get_Name(Strings.Encode(node.SelectSingleNode("CustomCar/Name").InnerText));
                             }
                             current++;
                         }
@@ -445,7 +445,7 @@ namespace SBRW.Launcher.Core.Discord.RPC_
                             {
                                 if (receivedId == node.SelectSingleNode("Id").InnerText)
                                 {
-                                    Launcher_Value.Game_Car_Name = Strings.Encode(node.SelectSingleNode("CustomCar/Name").InnerText);
+                                    Launcher_Value.Game_Car_Name = Cars.Get_Name(Strings.Encode(node.SelectSingleNode("CustomCar/Name").InnerText));
                                 }
                             }
                         }
@@ -459,6 +459,7 @@ namespace SBRW.Launcher.Core.Discord.RPC_
             finally
             {
                 GETContent = string.Empty;
+                GC.Collect();
             }
         }
     }

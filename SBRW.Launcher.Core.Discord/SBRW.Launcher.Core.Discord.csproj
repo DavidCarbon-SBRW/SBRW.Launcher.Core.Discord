@@ -6,7 +6,7 @@
     <Authors>Soapbox Race World - Launcher Division</Authors>
     <Company>Soapbox Race World</Company>
     <PackageProjectUrl>https://github.com/DavidCarbon-SBRW/SBRW.Launcher.Core.Discord</PackageProjectUrl>
-    <Version>0.0.0010</Version>
+    <Version>0.0.11</Version>
     <Description>A Game Launchers Discord RPC Library built within the .NET Standard Framework</Description>
     <RepositoryType>git</RepositoryType>
     <PackageTags>Discord, RPC</PackageTags>
@@ -29,11 +29,16 @@
     <DebugType>embedded</DebugType>
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Reference_\Json_\Cars.json" />
+    <EmbeddedResource Include="Reference_\Json_\Events.json" />
+  </ItemGroup>
   
   <ItemGroup>
     <PackageReference Include="DiscordRichPresence" Version="1.0.175" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
-    <PackageReference Include="SBRW.Launcher.Core" Version="0.0.20" />
+    <PackageReference Include="SBRW.Launcher.Core" Version="0.0.21" />
   </ItemGroup>
   
   <ItemGroup>
