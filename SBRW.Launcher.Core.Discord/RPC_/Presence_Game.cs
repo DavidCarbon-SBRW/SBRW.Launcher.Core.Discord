@@ -359,7 +359,7 @@ namespace SBRW.Launcher.Core.Discord.RPC_
                     };
                     Server_Presence.Buttons = Presence_Launcher.ButtonsList.ToArray();
 
-                    AC_Core.Start(Launcher_Value.Launcher_Select_Server_JSON.Server_Enable_Crew_Tags, false, Launcher_Value.Game_Process.Id, EventID);
+                    AC_Core.Start(Launcher_Value.Launcher_Select_Server_JSON.Server_Enable_Crew_Tags, true, 0, EventID);
 
                     if (Presence_Launcher.Running()) Presence_Launcher.Client.SetPresence(Server_Presence);
                 }
