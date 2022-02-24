@@ -54,9 +54,13 @@ namespace SBRW.Launcher.Core.Discord.Reference_.List_
             {
                 Log_Detail.OpenLog("Car Name RPC Search", null, Error, null, true);
             }
+            finally
+            {
+                GC.Collect();
+            }
 
             /* And if it's not found, do this instead */
-            return "Traffic Car (" + Car_Id + ")";
+            return "Addon Car (" + Car_Id + ")";
         }
     }
 }
