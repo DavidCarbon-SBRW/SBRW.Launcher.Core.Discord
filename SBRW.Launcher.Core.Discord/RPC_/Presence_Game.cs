@@ -10,6 +10,7 @@ using DiscordButton = DiscordRPC.Button;
 using SBRW.Launcher.Core.Extension.Logging_;
 using SBRW.Launcher.Core.Discord.Reference_.List_;
 using SBRW.Launcher.Core.Extension.String_;
+using System.Threading.Tasks;
 
 namespace SBRW.Launcher.Core.Discord.RPC_
 {
@@ -46,6 +47,11 @@ namespace SBRW.Launcher.Core.Discord.RPC_
         {
             try
             {
+                if (QueryParams.Count > 0)
+                {
+                    QueryParams.Clear();
+                }
+
                 foreach (dynamic param in GET)
                 {
                     dynamic value = GET[param];
@@ -57,10 +63,6 @@ namespace SBRW.Launcher.Core.Discord.RPC_
             catch (Exception Error)
             {
                 Log_Detail.OpenLog("DISCORD GAME PRESENCE [GET]", null, Error, null, true);
-            }
-            finally
-            {
-                QueryParams.Clear();
             }
 
             try
@@ -451,6 +453,8 @@ namespace SBRW.Launcher.Core.Discord.RPC_
                         }
                     }
                 }
+
+                GETContent = string.Empty;
             }
             catch (Exception Error)
             {
@@ -458,7 +462,28 @@ namespace SBRW.Launcher.Core.Discord.RPC_
             }
             finally
             {
-                GETContent = string.Empty;
+                GC.Collect();
+            }
+        }
+
+        /// <summary>
+        /// Game Status State
+        /// </summary>
+        /// <param name="Uri">Address Path</param>
+        /// <param name="Server_Reply">XML string File</param>
+        /// <param name="GET">Sub-Path in Address Path</param>
+        public async void State_Async(string Uri, string Server_Reply, dynamic GET)
+        {
+            try
+            {
+                await Task.Run(() => State(Uri, Server_Reply, GET)).ConfigureAwait(false);
+            }
+            catch (Exception Error)
+            {
+                Log_Detail.OpenLog("DISCORD GAME PRESENCE [Library]", string.Empty, Error, string.Empty, true);
+            }
+            finally
+            {
                 GC.Collect();
             }
         }
