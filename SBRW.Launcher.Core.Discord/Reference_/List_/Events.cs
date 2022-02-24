@@ -3,6 +3,8 @@ using SBRW.Launcher.Core.Extension.String_;
 using SBRW.Launcher.Core.Discord.FileReadWrite_;
 using System.Collections.Generic;
 using SBRW.Launcher.Core.Reference.Json_.Newtonsoft_;
+using System;
+using SBRW.Launcher.Core.Extension.Logging_;
 
 namespace SBRW.Launcher.Core.Discord.Reference_.List_
 {
@@ -23,27 +25,38 @@ namespace SBRW.Launcher.Core.Discord.Reference_.List_
         /// <returns>Event Name</returns>
         public static string Get_Name(int Event_Id)
         {
-            /* Let's load the "Cached From Server" version first and If we don't have a Server version, load "default" version */
-            if (List_Cached == null || List_Cached.Count <= 0)
+            try
             {
-                List_Cached = new List<Json_External_RPC.GME_Event>();
-                List_Cached.AddRange(
-                    JsonConvert.DeserializeObject<List<Json_External_RPC.GME_Event>>
-                    (Strings.Encode(
-                        !string.IsNullOrWhiteSpace(List_File) ? List_File :
-                        Extract_Resource.AsString("SBRW.Launcher.Core.Discord.Reference_.Json_.Events.json"))));
-            }
-
-            int Results_Index = List_Cached.FindIndex(i => string.Equals(i.ID, Event_Id.ToString()));
-
-            if (Results_Index >= 0)
-            {
-                string Event_Result = List_Cached.Find(i => string.Equals(i.ID, Event_Id.ToString())).Name;
-
-                if (!string.IsNullOrWhiteSpace(Event_Result) && Event_Result != Event_Id.ToString())
+                /* Let's load the "Cached From Server" version first and If we don't have a Server version, load "default" version */
+                if (List_Cached == null || List_Cached.Count <= 0)
                 {
-                    return Event_Result;
+                    List_Cached = new List<Json_External_RPC.GME_Event>();
+                    List_Cached.AddRange(
+                        JsonConvert.DeserializeObject<List<Json_External_RPC.GME_Event>>
+                        (Strings.Encode(
+                            !string.IsNullOrWhiteSpace(List_File) ? List_File :
+                            Extract_Resource.AsString("SBRW.Launcher.Core.Discord.Reference_.Json_.Events.json"))));
                 }
+
+                int Results_Index = List_Cached.FindIndex(i => string.Equals(i.ID, Event_Id.ToString()));
+
+                if (Results_Index >= 0)
+                {
+                    string Event_Result = List_Cached.Find(i => string.Equals(i.ID, Event_Id.ToString())).Name;
+
+                    if (!string.IsNullOrWhiteSpace(Event_Result) && Event_Result != Event_Id.ToString())
+                    {
+                        return Event_Result;
+                    }
+                }
+            }
+            catch (Exception Error)
+            {
+                Log_Detail.OpenLog("Event Name RPC Search", null, Error, null, true);
+            }
+            finally
+            {
+                GC.Collect();
             }
 
             /* And if it's not found, do this instead */
@@ -56,27 +69,38 @@ namespace SBRW.Launcher.Core.Discord.Reference_.List_
         /// <returns>Event Type</returns>
         public static string Get_Type(int Event_Id)
         {
-            /* Let's load the "Cached From Server" version first and If we don't have a Server version, load "default" version */
-            if (List_Cached == null || List_Cached.Count <= 0)
+            try
             {
-                List_Cached = new List<Json_External_RPC.GME_Event>();
-                List_Cached.AddRange(
-                    JsonConvert.DeserializeObject<List<Json_External_RPC.GME_Event>>
-                    (Strings.Encode(
-                        !string.IsNullOrWhiteSpace(List_File) ? List_File :
-                        Extract_Resource.AsString("SBRW.Launcher.Core.Discord.Reference_.Json_.Events.json"))));
-            }
-
-            int Results_Index = List_Cached.FindIndex(i => string.Equals(i.ID, Event_Id.ToString()));
-
-            if (Results_Index >= 0)
-            {
-                string Event_Result = List_Cached.Find(i => string.Equals(i.ID, Event_Id.ToString())).Type;
-
-                if (!string.IsNullOrWhiteSpace(Event_Result) && Event_Result != Event_Id.ToString())
+                /* Let's load the "Cached From Server" version first and If we don't have a Server version, load "default" version */
+                if (List_Cached == null || List_Cached.Count <= 0)
                 {
-                    return Event_Result;
+                    List_Cached = new List<Json_External_RPC.GME_Event>();
+                    List_Cached.AddRange(
+                        JsonConvert.DeserializeObject<List<Json_External_RPC.GME_Event>>
+                        (Strings.Encode(
+                            !string.IsNullOrWhiteSpace(List_File) ? List_File :
+                            Extract_Resource.AsString("SBRW.Launcher.Core.Discord.Reference_.Json_.Events.json"))));
                 }
+
+                int Results_Index = List_Cached.FindIndex(i => string.Equals(i.ID, Event_Id.ToString()));
+
+                if (Results_Index >= 0)
+                {
+                    string Event_Result = List_Cached.Find(i => string.Equals(i.ID, Event_Id.ToString())).Type;
+
+                    if (!string.IsNullOrWhiteSpace(Event_Result) && Event_Result != Event_Id.ToString())
+                    {
+                        return Event_Result;
+                    }
+                }
+            }
+            catch (Exception Error)
+            {
+                Log_Detail.OpenLog("Event Type RPC Search", null, Error, null, true);
+            }
+            finally
+            {
+                GC.Collect();
             }
 
             /* And if it's not found, do this instead */
