@@ -381,7 +381,7 @@ namespace SBRW.Launcher.Core.Discord.RPC_
         /// <remarks>RPC Status</remarks>
         /// <param name="RPC_State">Which RPC Status Text to Set</param>
         /// <param name="RPC_Status">Additional RPC Status Details to Display</param>
-        public async void Status_Async(string RPC_State, string RPC_Status)
+        public static async void Status_Async(string RPC_State, string RPC_Status)
         {
             try
             {

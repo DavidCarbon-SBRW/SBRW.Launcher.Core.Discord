@@ -472,7 +472,7 @@ namespace SBRW.Launcher.Core.Discord.RPC_
         /// <param name="Uri">Address Path</param>
         /// <param name="Server_Reply">XML string File</param>
         /// <param name="GET">Sub-Path in Address Path</param>
-        public async void State_Async(string Uri, string Server_Reply, dynamic GET)
+        public static async void State_Async(string Uri, string Server_Reply, dynamic GET)
         {
             try
             {
