@@ -38,11 +38,11 @@ namespace SBRW.Launcher.Core.Discord.RPC_
         private static Dictionary<string, object> QueryParams { get; set; } = new Dictionary<string, object>();
         private static string GETContent { get; set; } = string.Empty;
         /// <summary>
-        /// Game Status State
+        /// Game Status State<br></br>
         /// </summary>
-        /// <param name="Uri">Address Path</param>
-        /// <param name="Server_Reply">XML string File</param>
-        /// <param name="GET">Sub-Path in Address Path</param>
+        /// <param name="Uri">String - Address Path<br></br></param>
+        /// <param name="Server_Reply">String - XML string File<br></br></param>
+        /// <param name="GET">Dynamic - Sub-Path in Address Path<br></br></param>
         public static void State(string Uri, string Server_Reply, dynamic GET)
         {
             try
@@ -257,7 +257,7 @@ namespace SBRW.Launcher.Core.Discord.RPC_
                     if (Presence_Launcher.Running()) Presence_Launcher.Client.SetPresence(Server_Presence);
                 }
 
-                if (Uri == "/matchmaking/leavelobby" || Uri == "/matchmaking/declineinvite")
+                if (Uri == "/matchmaking/leavelobby" || Uri == "/matchmaking/declineinvite" || Uri == "/matchmaking/leavequeue")
                 {
                     /* Display Current Car in Freeroam */
                     Server_Presence.Details = "Driving " + Launcher_Value.Game_Car_Name;
@@ -467,6 +467,30 @@ namespace SBRW.Launcher.Core.Discord.RPC_
         }
 
         /// <summary>
+        /// Game Status State as a Task
+        /// </summary>
+        /// <param name="Object_Data"><inheritdoc cref="State"/></param>
+        /// <returns>Completed Task Regardless if an Error was Encountered or Not</returns>
+        public static Task State_Task(object Object_Data)
+        {
+            try
+            {
+                object[] Live_Data = Object_Data as object[];
+                State(Live_Data[0] as string, Live_Data[1] as string, Live_Data[2] as dynamic);
+            }
+            catch (Exception Error)
+            {
+                Log_Detail.OpenLog("DISCORD GAME PRESENCE [Task]", string.Empty, Error, string.Empty, true);
+            }
+            finally
+            {
+                GC.Collect();
+            }
+
+            return Task.CompletedTask;
+        }
+
+        /// <summary>
         /// Game Status State
         /// </summary>
         /// <param name="Uri">Address Path</param>
@@ -476,11 +500,11 @@ namespace SBRW.Launcher.Core.Discord.RPC_
         {
             try
             {
-                await Task.Run(() => State(Uri, Server_Reply, GET)).ConfigureAwait(false);
+                await Task.Run(() => State_Task(new object[] { Uri, Server_Reply, GET })).ConfigureAwait(false);
             }
             catch (Exception Error)
             {
-                Log_Detail.OpenLog("DISCORD GAME PRESENCE [Library]", string.Empty, Error, string.Empty, true);
+                Log_Detail.OpenLog("DISCORD GAME PRESENCE [Async]", string.Empty, Error, string.Empty, true);
             }
             finally
             {
