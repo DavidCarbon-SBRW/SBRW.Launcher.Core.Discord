@@ -76,7 +76,7 @@ namespace SBRW.Launcher.Core.Discord.RPC_
                     Presence.Assets = new Assets
                     {
                         LargeImageText = "Launcher",
-                        LargeImageKey = !RPC_Beta ? "nfsw_beta" : "nfsw"
+                        LargeImageKey = RPC_Beta ? "nfsw_beta" : "nfsw"
                     };
                 }
                 else if (RPC_State == "Unpack Game Files")
@@ -87,7 +87,7 @@ namespace SBRW.Launcher.Core.Discord.RPC_
                     Presence.Assets = new Assets
                     {
                         LargeImageText = "Launcher",
-                        LargeImageKey = !RPC_Beta ? "nfsw_beta" : "nfsw",
+                        LargeImageKey = RPC_Beta ? "nfsw_beta" : "nfsw",
                         SmallImageText = string.Empty,
                         SmallImageKey = "files_success"
                     };
@@ -101,7 +101,7 @@ namespace SBRW.Launcher.Core.Discord.RPC_
                     Presence.Assets = new Assets
                     {
                         LargeImageText = "Launcher",
-                        LargeImageKey = !RPC_Beta ? "nfsw_beta" : "nfsw",
+                        LargeImageKey = RPC_Beta ? "nfsw_beta" : "nfsw",
                         SmallImageText = string.Empty,
                         SmallImageKey = "files"
                     };
@@ -115,7 +115,7 @@ namespace SBRW.Launcher.Core.Discord.RPC_
                     Presence.Assets = new Assets
                     {
                         LargeImageText = "Launcher",
-                        LargeImageKey = !RPC_Beta ? "nfsw_beta" : "nfsw",
+                        LargeImageKey = RPC_Beta ? "nfsw_beta" : "nfsw",
                         SmallImageText = string.Empty,
                         SmallImageKey = "files_error"
                     };
@@ -128,7 +128,7 @@ namespace SBRW.Launcher.Core.Discord.RPC_
                     Presence.Assets = new Assets
                     {
                         LargeImageText = "Launcher",
-                        LargeImageKey = !RPC_Beta ? "nfsw_beta" : "nfsw",
+                        LargeImageKey = RPC_Beta ? "nfsw_beta" : "nfsw",
                         SmallImageText = string.Empty,
                         SmallImageKey = Certificate_Signature_Validation.Signed() ? "official" : "unofficial"
                     };
@@ -141,7 +141,7 @@ namespace SBRW.Launcher.Core.Discord.RPC_
                     Presence.Assets = new Assets
                     {
                         LargeImageText = "Launcher",
-                        LargeImageKey = !RPC_Beta ? "nfsw_beta" : "nfsw",
+                        LargeImageKey = RPC_Beta ? "nfsw_beta" : "nfsw",
                         SmallImageText = string.Empty,
                         SmallImageKey = "files_alert"
                     };
@@ -154,7 +154,7 @@ namespace SBRW.Launcher.Core.Discord.RPC_
                     Presence.Assets = new Assets
                     {
                         LargeImageText = "Launcher",
-                        LargeImageKey = !RPC_Beta ? "nfsw_beta" : "nfsw",
+                        LargeImageKey = RPC_Beta ? "nfsw_beta" : "nfsw",
                         SmallImageText = string.Empty,
                         SmallImageKey = "files_success"
                     };
@@ -167,7 +167,7 @@ namespace SBRW.Launcher.Core.Discord.RPC_
                     Presence.Assets = new Assets
                     {
                         LargeImageText = "Launcher",
-                        LargeImageKey = !RPC_Beta ? "nfsw_beta" : "nfsw",
+                        LargeImageKey = RPC_Beta ? "nfsw_beta" : "nfsw",
                         SmallImageText = string.Empty,
                         SmallImageKey = "files"
                     };
@@ -180,7 +180,7 @@ namespace SBRW.Launcher.Core.Discord.RPC_
                     Presence.Assets = new Assets
                     {
                         LargeImageText = "Launcher",
-                        LargeImageKey = !RPC_Beta ? "nfsw_beta" : "nfsw",
+                        LargeImageKey = RPC_Beta ? "nfsw_beta" : "nfsw",
                         SmallImageText = string.Empty,
                         SmallImageKey = "files_error"
                     };
@@ -193,7 +193,7 @@ namespace SBRW.Launcher.Core.Discord.RPC_
                     Presence.Assets = new Assets
                     {
                         LargeImageText = "Launcher",
-                        LargeImageKey = !RPC_Beta ? "nfsw_beta" : "nfsw",
+                        LargeImageKey = RPC_Beta ? "nfsw_beta" : "nfsw",
                         SmallImageText = string.Empty,
                         SmallImageKey = "files"
                     };
@@ -206,7 +206,7 @@ namespace SBRW.Launcher.Core.Discord.RPC_
                     Presence.Assets = new Assets
                     {
                         LargeImageText = "Launcher",
-                        LargeImageKey = !RPC_Beta ? "nfsw_beta" : "nfsw",
+                        LargeImageKey = RPC_Beta ? "nfsw_beta" : "nfsw",
                         SmallImageText = string.Empty,
                         SmallImageKey = "files_error"
                     };
@@ -222,7 +222,7 @@ namespace SBRW.Launcher.Core.Discord.RPC_
                         Presence.Assets = new Assets
                         {
                             LargeImageText = "Launcher",
-                            LargeImageKey = !RPC_Beta ? "nfsw_beta" : "nfsw",
+                            LargeImageKey = RPC_Beta ? "nfsw_beta" : "nfsw",
                             SmallImageText = Security_Center_Conversion.RPC(Launcher_Value.Launcher_Security_Center_Codes, false),
                             SmallImageKey = Security_Center_Conversion.RPC(Launcher_Value.Launcher_Security_Center_Codes)
                         };
@@ -234,7 +234,7 @@ namespace SBRW.Launcher.Core.Discord.RPC_
                         Presence.Assets = new Assets
                         {
                             LargeImageText = "Launcher",
-                            LargeImageKey = !RPC_Beta ? "nfsw_beta" : "nfsw",
+                            LargeImageKey = RPC_Beta ? "nfsw_beta" : "nfsw",
                             SmallImageText = string.Empty,
                             SmallImageKey = "screen_register"
                         };
@@ -246,7 +246,7 @@ namespace SBRW.Launcher.Core.Discord.RPC_
                         Presence.Assets = new Assets
                         {
                             LargeImageText = "Launcher",
-                            LargeImageKey = !RPC_Beta ? "nfsw_beta" : "nfsw",
+                            LargeImageKey = RPC_Beta ? "nfsw_beta" : "nfsw",
                             SmallImageText = string.Empty,
                             SmallImageKey = "screen_settings"
                         };
@@ -258,7 +258,7 @@ namespace SBRW.Launcher.Core.Discord.RPC_
                         Presence.Assets = new Assets
                         {
                             LargeImageText = "Launcher",
-                            LargeImageKey = !RPC_Beta ? "nfsw_beta" : "nfsw",
+                            LargeImageKey = RPC_Beta ? "nfsw_beta" : "nfsw",
                             SmallImageText = string.Empty,
                             SmallImageKey = "screen_uxe"
                         };
@@ -270,7 +270,7 @@ namespace SBRW.Launcher.Core.Discord.RPC_
                         Presence.Assets = new Assets
                         {
                             LargeImageText = "Launcher",
-                            LargeImageKey = !RPC_Beta ? "nfsw_beta" : "nfsw",
+                            LargeImageKey = RPC_Beta ? "nfsw_beta" : "nfsw",
                             SmallImageText = string.Empty,
                             SmallImageKey = "screen_verify"
                         };
@@ -282,7 +282,7 @@ namespace SBRW.Launcher.Core.Discord.RPC_
                         Presence.Assets = new Assets
                         {
                             LargeImageText = "Launcher",
-                            LargeImageKey = !RPC_Beta ? "nfsw_beta" : "nfsw",
+                            LargeImageKey = RPC_Beta ? "nfsw_beta" : "nfsw",
                             SmallImageText = string.Empty,
                             SmallImageKey = "verify_files_scan"
                         };
@@ -294,7 +294,7 @@ namespace SBRW.Launcher.Core.Discord.RPC_
                         Presence.Assets = new Assets
                         {
                             LargeImageText = "Launcher",
-                            LargeImageKey = !RPC_Beta ? "nfsw_beta" : "nfsw",
+                            LargeImageKey = RPC_Beta ? "nfsw_beta" : "nfsw",
                             SmallImageText = string.Empty,
                             SmallImageKey = "verify_files_bad"
                         };
@@ -306,7 +306,7 @@ namespace SBRW.Launcher.Core.Discord.RPC_
                         Presence.Assets = new Assets
                         {
                             LargeImageText = "Launcher",
-                            LargeImageKey = !RPC_Beta ? "nfsw_beta" : "nfsw",
+                            LargeImageKey = RPC_Beta ? "nfsw_beta" : "nfsw",
                             SmallImageText = string.Empty,
                             SmallImageKey = "verify_files_good"
                         };
@@ -318,7 +318,7 @@ namespace SBRW.Launcher.Core.Discord.RPC_
                         Presence.Assets = new Assets
                         {
                             LargeImageText = "Need for Speed: World",
-                            LargeImageKey = !RPC_Beta ? "nfsw_beta" : "nfsw",
+                            LargeImageKey = "nfsw",
                             SmallImageText = string.Empty,
                             SmallImageKey = "ingame"
                         };
