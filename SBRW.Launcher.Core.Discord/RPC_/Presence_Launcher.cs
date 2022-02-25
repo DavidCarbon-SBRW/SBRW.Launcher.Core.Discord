@@ -46,12 +46,12 @@ namespace SBRW.Launcher.Core.Discord.RPC_
         public static bool Download { get; set; } = true;
 
         /// <summary>
-        /// Sets the current Status of the Launcher's State
+        /// Sets the current Status of the Launcher's State<br></br>
         /// </summary>
-        /// <remarks>RPC Status</remarks>
-        /// <param name="RPC_State">Which RPC Status Text to Set</param>
-        /// <param name="RPC_Status">Additional RPC Status Details to Display</param>
-        /// <param name="RPC_Beta">Displays a Different Icon for Beta Launcher Builds</param>
+        /// <remarks>RPC Status<br></br></remarks>
+        /// <param name="RPC_State">String - Which RPC Status Text to Set<br></br></param>
+        /// <param name="RPC_Status">String - Additional RPC Status Details to Display<br></br></param>
+        /// <param name="RPC_Beta">Bool - Displays a Different Icon for Beta Launcher Builds<br></br></param>
         public static void Status(string RPC_State, string RPC_Status, bool RPC_Beta = false)
         {
             try
@@ -367,7 +367,7 @@ namespace SBRW.Launcher.Core.Discord.RPC_
             }
             catch (Exception Error)
             {
-                Log_Detail.OpenLog("DISCORD", null, Error, null, true);
+                Log_Detail.OpenLog("DISCORD LAUNCHER PRESENCE", null, Error, null, true);
             }
             finally
             {
@@ -376,27 +376,65 @@ namespace SBRW.Launcher.Core.Discord.RPC_
         }
 
         /// <summary>
+        /// Sets the current Status of the Launcher's RPC_State as a Task
+        /// </summary>
+        /// <param name="Object_Data"><inheritdoc cref="Status"/></param>
+        /// <returns>Completed Task Regardless if an Error was Encountered or Not</returns>
+        public static Task Status_Task(object Object_Data)
+        {
+            try
+            {
+                object[] Live_Data = Object_Data as object[];
+                if (Live_Data.Length > 2)
+                {
+                    if (bool.TryParse(Live_Data[2] as string, out bool Object_Bool))
+                    {
+                        Status(Live_Data[0] as string, Live_Data[1] as string, Object_Bool);
+                    }
+                    else
+                    {
+                        Status(Live_Data[0] as string, Live_Data[1] as string);
+                    }
+                }
+                else
+                {
+                    Status(Live_Data[0] as string, Live_Data[1] as string);
+                }
+            }
+            catch (Exception Error)
+            {
+                Log_Detail.OpenLog("DISCORD LAUNCHER PRESENCE [Task]", string.Empty, Error, string.Empty, true);
+            }
+            finally
+            {
+                GC.Collect();
+            }
+            
+            return Task.CompletedTask;
+        }
+
+        /// <summary>
         /// Sets the current Status of the Launcher's RPC_State
         /// </summary>
         /// <remarks>RPC Status</remarks>
         /// <param name="RPC_State">Which RPC Status Text to Set</param>
         /// <param name="RPC_Status">Additional RPC Status Details to Display</param>
-        public static async void Status_Async(string RPC_State, string RPC_Status)
+        /// <param name="RPC_Beta">Displays a Different Icon for Beta Launcher Builds</param>
+        public static async void Status_Async(string RPC_State, string RPC_Status, bool RPC_Beta = false)
         {
             try
             {
-                await Task.Run(() => Status(RPC_State, RPC_Status)).ConfigureAwait(false);
+                await Task.Run(() => Status_Task(new object[] { RPC_State, RPC_Status, RPC_Beta })).ConfigureAwait(false);
             }
             catch (Exception Error)
             {
-                Log_Detail.OpenLog("DISCORD GAME PRESENCE [Library]", string.Empty, Error, string.Empty, true);
+                Log_Detail.OpenLog("DISCORD LAUNCHER PRESENCE [Async]", string.Empty, Error, string.Empty, true);
             }
             finally
             {
                 GC.Collect();
             }
         }
-
 
         /// <summary>
         /// Starts Game Launcher's RPC Status. If a Discord Client is Running on the Machine, it will Display the status on the User's Profile.
