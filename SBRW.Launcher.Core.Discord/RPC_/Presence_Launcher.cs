@@ -494,9 +494,16 @@ namespace SBRW.Launcher.Core.Discord.RPC_
             {
                 if (!Presence_Settings.Disable_RPC_Startup)
                 {
+                    bool Valid_RPC = long.TryParse(RPC_ID, out long App_ID_Checked);
+
+                    if (Valid_RPC || Boot_Or_Reboot)
+                    {
+                        Stop("Update");
+                    }
+
                     Log.Core("DISCORD: Initializing Rich Presence Core" + (!Boot_Or_Reboot ? " For Server" : ""));
 
-                    Client = new DiscordRpcClient(long.TryParse(RPC_ID, out long App_ID_Checked) ? App_ID_Checked.ToString() : "576154452348633108");
+                    Client = new DiscordRpcClient(Valid_RPC ? App_ID_Checked.ToString() : "576154452348633108");
                     Client.OnReady += (sender, e) =>
                     {
                         Log.Info("DISCORD: Discord ready. Detected user: " + e.User.Username + ". Discord version: " + e.Version);
