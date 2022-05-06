@@ -49,10 +49,36 @@ namespace SBRW.Launcher.Core.Discord.RPC_
         /// Sets the current Status of the Launcher's State<br></br>
         /// </summary>
         /// <remarks>RPC Status<br></br></remarks>
-        /// <param name="RPC_State">String - Which RPC Status Text to Set<br></br></param>
+        /// <param name="RPC_State">
+        /// Int - Which RPC Status Text to Set
+        /// <br></br><br></br>
+        /// <remarks>
+        /// 0 - "Start Up"<br></br>
+        /// 1 - "Unpack Game Files"<br></br>
+        /// 2 - "Download Game Files"<br></br>
+        /// 3 - "Download Game Files Error"<br></br>
+        /// 4 - "Idle Ready"<br></br>
+        /// 5 - "Checking ModNet"<br></br>
+        /// 6 - "ModNet File Check Passed"<br></br>
+        /// 7 - "Download ModNet"<br></br>
+        /// 8 - "Download ModNet Error"<br></br>
+        /// 9 - "Download Server Mods"<br></br>
+        /// 10 - "Download Server Mods Error"<br></br>
+        /// <br></br>
+        /// 20 - "Security Center"<br></br>
+        /// 21 - "Register"<br></br>
+        /// 22 - "Settings"<br></br>
+        /// 23 - "User XML Editor"<br></br>
+        /// 24 - "Verify"<br></br>
+        /// 25 - "Verify Scan"<br></br>
+        /// 26 - "Verify Bad"<br></br>
+        /// 27 - "Verify Good"<br></br>
+        /// 28 - "In-Game"<br></br>
+        /// </remarks>
+        /// </param>
         /// <param name="RPC_Status">String - Additional RPC Status Details to Display<br></br></param>
         /// <param name="RPC_Beta">Bool - Displays a Different Icon for Beta Launcher Builds<br></br></param>
-        public static void Status(string RPC_State, string RPC_Status, bool RPC_Beta = false)
+        public static void Status(int RPC_State, string RPC_Status, bool RPC_Beta = false)
         {
             try
             {
@@ -69,7 +95,7 @@ namespace SBRW.Launcher.Core.Discord.RPC_
                 });
                 Presence.Buttons = ButtonsList.ToArray();
 
-                if (RPC_State == "Start Up")
+                if (RPC_State == 0)
                 {
                     Presence.State = RPC_Status;
                     Presence.Details = "In-Launcher: " + Presence_Settings.Launcher_Version;
@@ -79,7 +105,7 @@ namespace SBRW.Launcher.Core.Discord.RPC_
                         LargeImageKey = RPC_Beta ? "nfsw_beta" : "nfsw"
                     };
                 }
-                else if (RPC_State == "Unpack Game Files")
+                else if (RPC_State == 1)
                 {
                     Download = true;
                     Presence.State = RPC_Status;
@@ -93,7 +119,7 @@ namespace SBRW.Launcher.Core.Discord.RPC_
                     };
                     Presence.Buttons = ButtonsList.ToArray();
                 }
-                else if (RPC_State == "Download Game Files")
+                else if (RPC_State == 2)
                 {
                     Download = true;
                     Presence.State = RPC_Status;
@@ -107,7 +133,7 @@ namespace SBRW.Launcher.Core.Discord.RPC_
                     };
                     Presence.Buttons = ButtonsList.ToArray();
                 }
-                else if (RPC_State == "Download Game Files Error")
+                else if (RPC_State == 3)
                 {
                     Download = true;
                     Presence.State = "Game Download Error";
@@ -121,7 +147,7 @@ namespace SBRW.Launcher.Core.Discord.RPC_
                     };
                     Presence.Buttons = ButtonsList.ToArray();
                 }
-                else if (RPC_State == "Idle Ready")
+                else if (RPC_State == 4)
                 {
                     Presence.State = "Ready To Race";
                     Presence.Details = "In-Launcher: " + Presence_Settings.Launcher_Version;
@@ -134,7 +160,7 @@ namespace SBRW.Launcher.Core.Discord.RPC_
                     };
                     Presence.Buttons = ButtonsList.ToArray();
                 }
-                else if (RPC_State == "Checking ModNet")
+                else if (RPC_State == 5)
                 {
                     Presence.State = "Checking ModNet";
                     Presence.Details = "In-Launcher: " + Presence_Settings.Launcher_Version;
@@ -147,7 +173,7 @@ namespace SBRW.Launcher.Core.Discord.RPC_
                     };
                     Presence.Buttons = ButtonsList.ToArray();
                 }
-                else if (RPC_State == "ModNet File Check Passed")
+                else if (RPC_State == 6)
                 {
                     Presence.State = "Has ModNet File: " + RPC_Status;
                     Presence.Details = "In-Launcher: " + Presence_Settings.Launcher_Version;
@@ -160,7 +186,7 @@ namespace SBRW.Launcher.Core.Discord.RPC_
                     };
                     Presence.Buttons = ButtonsList.ToArray();
                 }
-                else if (RPC_State == "Download ModNet")
+                else if (RPC_State == 7)
                 {
                     Presence.State = "Downloading ModNet Files";
                     Presence.Details = "In-Launcher: " + Presence_Settings.Launcher_Version;
@@ -173,7 +199,7 @@ namespace SBRW.Launcher.Core.Discord.RPC_
                     };
                     Presence.Buttons = ButtonsList.ToArray();
                 }
-                else if (RPC_State == "Download ModNet Error")
+                else if (RPC_State == 8)
                 {
                     Presence.State = "ModNet Encounterd an Error";
                     Presence.Details = "In-Launcher: " + Presence_Settings.Launcher_Version;
@@ -186,7 +212,7 @@ namespace SBRW.Launcher.Core.Discord.RPC_
                     };
                     Presence.Buttons = ButtonsList.ToArray();
                 }
-                else if (RPC_State == "Download Server Mods")
+                else if (RPC_State == 9)
                 {
                     Presence.State = "Downloading Server Mods";
                     Presence.Details = "In-Launcher: " + Presence_Settings.Launcher_Version;
@@ -199,7 +225,7 @@ namespace SBRW.Launcher.Core.Discord.RPC_
                     };
                     Presence.Buttons = ButtonsList.ToArray();
                 }
-                else if (RPC_State == "Download Server Mods Error")
+                else if (RPC_State == 10)
                 {
                     Presence.State = "Server Mod Download Error";
                     Presence.Details = "In-Launcher: " + Presence_Settings.Launcher_Version;
@@ -213,9 +239,9 @@ namespace SBRW.Launcher.Core.Discord.RPC_
                     Presence.Buttons = ButtonsList.ToArray();
                 }
 
-                if (Download == false)
+                if (!Download)
                 {
-                    if (RPC_State == "Security Center")
+                    if (RPC_State == 20)
                     {
                         Presence.Details = "In-Launcher: " + Presence_Settings.Launcher_Version;
                         Presence.State = "On Security Center Screen";
@@ -227,7 +253,7 @@ namespace SBRW.Launcher.Core.Discord.RPC_
                             SmallImageKey = Security_Center_Conversion.RPC(Launcher_Value.Launcher_Security_Center_Codes)
                         };
                     }
-                    else if (RPC_State == "Register")
+                    else if (RPC_State == 21)
                     {
                         Presence.Details = "In-Launcher: " + Presence_Settings.Launcher_Version;
                         Presence.State = "On Registration Screen";
@@ -239,7 +265,7 @@ namespace SBRW.Launcher.Core.Discord.RPC_
                             SmallImageKey = "screen_register"
                         };
                     }
-                    else if (RPC_State == "Settings")
+                    else if (RPC_State == 22)
                     {
                         Presence.Details = "In-Launcher: " + Presence_Settings.Launcher_Version;
                         Presence.State = "On Settings Screen";
@@ -251,7 +277,7 @@ namespace SBRW.Launcher.Core.Discord.RPC_
                             SmallImageKey = "screen_settings"
                         };
                     }
-                    else if (RPC_State == "User XML Editor")
+                    else if (RPC_State == 23)
                     {
                         Presence.Details = "In-Launcher: " + Presence_Settings.Launcher_Version;
                         Presence.State = "On User XML Editor Screen";
@@ -263,7 +289,7 @@ namespace SBRW.Launcher.Core.Discord.RPC_
                             SmallImageKey = "screen_uxe"
                         };
                     }
-                    else if (RPC_State == "Verify")
+                    else if (RPC_State == 24)
                     {
                         Presence.Details = "In-Launcher: " + Presence_Settings.Launcher_Version;
                         Presence.State = "On Verify Game Files Screen";
@@ -275,7 +301,7 @@ namespace SBRW.Launcher.Core.Discord.RPC_
                             SmallImageKey = "screen_verify"
                         };
                     }
-                    else if (RPC_State == "Verify Scan")
+                    else if (RPC_State == 25)
                     {
                         Presence.Details = "In-Launcher: " + Presence_Settings.Launcher_Version;
                         Presence.State = "Verifying Game Files";
@@ -287,7 +313,7 @@ namespace SBRW.Launcher.Core.Discord.RPC_
                             SmallImageKey = "verify_files_scan"
                         };
                     }
-                    else if (RPC_State == "Verify Bad")
+                    else if (RPC_State == 26)
                     {
                         Presence.Details = "In-Launcher: " + Presence_Settings.Launcher_Version;
                         Presence.State = "Downloaded " + RPC_Status + " Missing Game Files";
@@ -299,7 +325,7 @@ namespace SBRW.Launcher.Core.Discord.RPC_
                             SmallImageKey = "verify_files_bad"
                         };
                     }
-                    else if (RPC_State == "Verify Good")
+                    else if (RPC_State == 27)
                     {
                         Presence.Details = "In-Launcher: " + Presence_Settings.Launcher_Version;
                         Presence.State = "Finished Validating Game Files";
@@ -311,7 +337,7 @@ namespace SBRW.Launcher.Core.Discord.RPC_
                             SmallImageKey = "verify_files_good"
                         };
                     }
-                    else if (RPC_State == "In-Game")
+                    else if (RPC_State == 28)
                     {
                         Presence.State = Launcher_Value.Game_Server_Name;
                         Presence.Details = "In-Game";
@@ -323,13 +349,13 @@ namespace SBRW.Launcher.Core.Discord.RPC_
                             SmallImageKey = "ingame"
                         };
 
-                        if (!String.IsNullOrWhiteSpace(Launcher_Value.Launcher_Select_Server_JSON.Server_Social_Home) ||
-                            !String.IsNullOrWhiteSpace(Launcher_Value.Launcher_Select_Server_JSON.Server_Social_Discord) ||
-                            !String.IsNullOrWhiteSpace(Launcher_Value.Launcher_Select_Server_JSON.Server_Panel))
+                        if (!string.IsNullOrWhiteSpace(Launcher_Value.Launcher_Select_Server_JSON.Server_Social_Home ?? string.Empty) ||
+                            !string.IsNullOrWhiteSpace(Launcher_Value.Launcher_Select_Server_JSON.Server_Social_Discord ?? string.Empty) ||
+                            !string.IsNullOrWhiteSpace(Launcher_Value.Launcher_Select_Server_JSON.Server_Panel ?? string.Empty))
                         {
                             ButtonsList.Clear();
 
-                            if (!String.IsNullOrWhiteSpace(Launcher_Value.Launcher_Select_Server_JSON.Server_Panel))
+                            if (!string.IsNullOrWhiteSpace(Launcher_Value.Launcher_Select_Server_JSON.Server_Panel))
                             {
                                 /* Let's format it now, if possible */
                                 ButtonsList.Add(new DiscordButton()
@@ -338,7 +364,7 @@ namespace SBRW.Launcher.Core.Discord.RPC_
                                     Url = Launcher_Value.Launcher_Select_Server_JSON.Server_Panel.Split(new string[] { "{sep}" }, StringSplitOptions.None)[0]
                                 });
                             }
-                            else if (!String.IsNullOrWhiteSpace(Launcher_Value.Launcher_Select_Server_JSON.Server_Social_Home) &&
+                            else if (!string.IsNullOrWhiteSpace(Launcher_Value.Launcher_Select_Server_JSON.Server_Social_Home) &&
                                 Launcher_Value.Launcher_Select_Server_JSON.Server_Social_Home != Launcher_Value.Launcher_Select_Server_JSON.Server_Social_Discord)
                             {
                                 ButtonsList.Add(new DiscordButton()
@@ -348,7 +374,7 @@ namespace SBRW.Launcher.Core.Discord.RPC_
                                 });
                             }
 
-                            if (!String.IsNullOrWhiteSpace(Launcher_Value.Launcher_Select_Server_JSON.Server_Social_Discord))
+                            if (!string.IsNullOrWhiteSpace(Launcher_Value.Launcher_Select_Server_JSON.Server_Social_Discord))
                             {
                                 ButtonsList.Add(new DiscordButton()
                                 {
@@ -363,7 +389,9 @@ namespace SBRW.Launcher.Core.Discord.RPC_
                 }
 
                 if (Running() && Launcher_Value.Launcher_Select_Server_Category != "DEV")
+                {
                     Client.SetPresence(Presence);
+                } 
             }
             catch (Exception Error)
             {
@@ -389,16 +417,19 @@ namespace SBRW.Launcher.Core.Discord.RPC_
                 {
                     if (bool.TryParse(Live_Data[2] as string, out bool Object_Bool))
                     {
-                        Status(Live_Data[0] as string, Live_Data[1] as string, Object_Bool);
+                        int.TryParse(Live_Data[0].ToString(), out int Converted_Int);
+                        Status(Converted_Int, Live_Data[1] as string, Object_Bool);
                     }
                     else
                     {
-                        Status(Live_Data[0] as string, Live_Data[1] as string);
+                        int.TryParse(Live_Data[0].ToString(), out int Converted_Int);
+                        Status(Converted_Int, Live_Data[1] as string);
                     }
                 }
                 else
                 {
-                    Status(Live_Data[0] as string, Live_Data[1] as string);
+                    int.TryParse(Live_Data[0].ToString(), out int Converted_Int);
+                    Status(Converted_Int, Live_Data[1] as string);
                 }
             }
             catch (Exception Error)
@@ -420,7 +451,7 @@ namespace SBRW.Launcher.Core.Discord.RPC_
         /// <param name="RPC_State">Which RPC Status Text to Set</param>
         /// <param name="RPC_Status">Additional RPC Status Details to Display</param>
         /// <param name="RPC_Beta">Displays a Different Icon for Beta Launcher Builds</param>
-        public static async void Status_Async(string RPC_State, string RPC_Status, bool RPC_Beta = false)
+        public static async void Status_Async(int RPC_State, string RPC_Status, bool RPC_Beta = false)
         {
             try
             {
@@ -439,62 +470,42 @@ namespace SBRW.Launcher.Core.Discord.RPC_
         /// <summary>
         /// Starts Game Launcher's RPC Status. If a Discord Client is Running on the Machine, it will Display the status on the User's Profile.
         /// </summary>
-        /// <param name="RPC_State"></param>
-        /// <param name="RPC_ID"></param>
-        /// <param name="FailSafe_App_ID">Custom Application ID for RPC. Default is Soapbox Race World's App</param>
+        /// <param name="Boot_Or_Reboot">Calls an Invoke to Discord Client</param>
+        /// <param name="RPC_ID">Custom Application ID for RPC. Default is Soapbox Race World's App</param>
         /// <remarks>Displays Launcher and Server Status</remarks>
-        public static void Start(string RPC_State, string RPC_ID, string FailSafe_App_ID = null)
+        public static void Start(bool Boot_Or_Reboot = true, string RPC_ID = null)
         {
             try
             {
                 if (!Presence_Settings.Disable_RPC_Startup)
                 {
-                    if (RPC_State == "Start Up")
+                    Log.Core("DISCORD: Initializing Rich Presence Core" + (!Boot_Or_Reboot ? " For Server" : ""));
+
+                    Client = new DiscordRpcClient(long.TryParse(RPC_ID, out long App_ID_Checked) ? App_ID_Checked.ToString() : "576154452348633108");
+                    Client.OnReady += (sender, e) =>
                     {
-                        Log.Core("DISCORD: Initializing Rich Presence Core");
+                        Log.Info("DISCORD: Discord ready. Detected user: " + e.User.Username + ". Discord version: " + e.Version);
+                        Launcher_Value.Launcher_Discord_UserID = e.User.ID.ToString();
+                    };
+                    Client.OnError += (sender, Error) =>
+                    {
+                        Log.Error("DISCORD: " + Error.Message);
+                    };
+                    Client.SkipIdenticalPresence = true;
+                    Client.ShutdownOnly = true;
 
-                        Client = new DiscordRpcClient(long.TryParse(FailSafe_App_ID, out long App_ID_Checked) ? App_ID_Checked.ToString() : "576154452348633108");
-
-                        Client.OnReady += (sender, e) =>
-                        {
-                            Log.Info("DISCORD: Discord ready. Detected user: " + e.User.Username + ". Discord version: " + e.Version);
-                            Launcher_Value.Launcher_Discord_UserID = e.User.ID.ToString();
-                        };
-
-                        Client.OnError += (sender, Error) =>
-                        {
-                            Log.Error("DISCORD: " + Error.Message);
-                        };
-                        Client.SkipIdenticalPresence = true;
-                        Client.ShutdownOnly = true;
-
+                    if (Launcher_Value.Launcher_Select_Server_Category != "DEV")
+                    {
                         Client.Initialize();
-                        Update();
-                    }
-                    else if (RPC_State == "New RPC")
-                    {
-                        if (Launcher_Value.Launcher_Select_Server_Category != "DEV")
-                        {
-                            Log.Core("DISCORD: Initializing Rich Presence Core For Server");
-
-                            Stop("Update");
-                            Client = new DiscordRpcClient(RPC_ID);
-
-                            Client.OnError += (sender, Error) =>
-                            {
-                                Log.Error("DISCORD: " + Error.Message);
-                            };
-
-                            Client.Initialize();
-                        }
-                        else
-                        {
-                            Stop("Close");
-                        }
                     }
                     else
                     {
-                        Log.Error("DISCORD: Unable to determine the RPC RPC_State");
+                        Stop("Close");
+                    }
+
+                    if (Boot_Or_Reboot)
+                    {
+                        Update();
                     }
                 }
                 else
@@ -519,7 +530,9 @@ namespace SBRW.Launcher.Core.Discord.RPC_
         public static void Update()
         {
             if (Running())
+            {
                 Client.Invoke();
+            }
         }
 
         /// <summary>
