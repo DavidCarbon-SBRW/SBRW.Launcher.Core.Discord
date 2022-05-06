@@ -78,7 +78,7 @@ namespace SBRW.Launcher.Core.Discord.RPC_
         /// </param>
         /// <param name="RPC_Status">String - Additional RPC Status Details to Display<br></br></param>
         /// <param name="RPC_Beta">Bool - Displays a Different Icon for Beta Launcher Builds<br></br></param>
-        public static void Status(int RPC_State, string RPC_Status, bool RPC_Beta = false)
+        public static void Status(int RPC_State, string RPC_Status = "", bool RPC_Beta = false)
         {
             try
             {
@@ -95,297 +95,312 @@ namespace SBRW.Launcher.Core.Discord.RPC_
                 });
                 Presence.Buttons = ButtonsList.ToArray();
 
-                if (RPC_State == 0)
+                switch (RPC_State)
                 {
-                    Presence.State = RPC_Status;
-                    Presence.Details = "In-Launcher: " + Presence_Settings.Launcher_Version;
-                    Presence.Assets = new Assets
-                    {
-                        LargeImageText = "Launcher",
-                        LargeImageKey = RPC_Beta ? "nfsw_beta" : "nfsw"
-                    };
-                }
-                else if (RPC_State == 1)
-                {
-                    Download = true;
-                    Presence.State = RPC_Status;
-                    Presence.Details = "In-Launcher: " + Presence_Settings.Launcher_Version;
-                    Presence.Assets = new Assets
-                    {
-                        LargeImageText = "Launcher",
-                        LargeImageKey = RPC_Beta ? "nfsw_beta" : "nfsw",
-                        SmallImageText = string.Empty,
-                        SmallImageKey = "files_success"
-                    };
-                    Presence.Buttons = ButtonsList.ToArray();
-                }
-                else if (RPC_State == 2)
-                {
-                    Download = true;
-                    Presence.State = RPC_Status;
-                    Presence.Details = "In-Launcher: " + Presence_Settings.Launcher_Version;
-                    Presence.Assets = new Assets
-                    {
-                        LargeImageText = "Launcher",
-                        LargeImageKey = RPC_Beta ? "nfsw_beta" : "nfsw",
-                        SmallImageText = string.Empty,
-                        SmallImageKey = "files"
-                    };
-                    Presence.Buttons = ButtonsList.ToArray();
-                }
-                else if (RPC_State == 3)
-                {
-                    Download = true;
-                    Presence.State = "Game Download Error";
-                    Presence.Details = "In-Launcher: " + Presence_Settings.Launcher_Version;
-                    Presence.Assets = new Assets
-                    {
-                        LargeImageText = "Launcher",
-                        LargeImageKey = RPC_Beta ? "nfsw_beta" : "nfsw",
-                        SmallImageText = string.Empty,
-                        SmallImageKey = "files_error"
-                    };
-                    Presence.Buttons = ButtonsList.ToArray();
-                }
-                else if (RPC_State == 4)
-                {
-                    Presence.State = "Ready To Race";
-                    Presence.Details = "In-Launcher: " + Presence_Settings.Launcher_Version;
-                    Presence.Assets = new Assets
-                    {
-                        LargeImageText = "Launcher",
-                        LargeImageKey = RPC_Beta ? "nfsw_beta" : "nfsw",
-                        SmallImageText = string.Empty,
-                        SmallImageKey = Certificate_Signature_Validation.Signed() ? "official" : "unofficial"
-                    };
-                    Presence.Buttons = ButtonsList.ToArray();
-                }
-                else if (RPC_State == 5)
-                {
-                    Presence.State = "Checking ModNet";
-                    Presence.Details = "In-Launcher: " + Presence_Settings.Launcher_Version;
-                    Presence.Assets = new Assets
-                    {
-                        LargeImageText = "Launcher",
-                        LargeImageKey = RPC_Beta ? "nfsw_beta" : "nfsw",
-                        SmallImageText = string.Empty,
-                        SmallImageKey = "files_alert"
-                    };
-                    Presence.Buttons = ButtonsList.ToArray();
-                }
-                else if (RPC_State == 6)
-                {
-                    Presence.State = "Has ModNet File: " + RPC_Status;
-                    Presence.Details = "In-Launcher: " + Presence_Settings.Launcher_Version;
-                    Presence.Assets = new Assets
-                    {
-                        LargeImageText = "Launcher",
-                        LargeImageKey = RPC_Beta ? "nfsw_beta" : "nfsw",
-                        SmallImageText = string.Empty,
-                        SmallImageKey = "files_success"
-                    };
-                    Presence.Buttons = ButtonsList.ToArray();
-                }
-                else if (RPC_State == 7)
-                {
-                    Presence.State = "Downloading ModNet Files";
-                    Presence.Details = "In-Launcher: " + Presence_Settings.Launcher_Version;
-                    Presence.Assets = new Assets
-                    {
-                        LargeImageText = "Launcher",
-                        LargeImageKey = RPC_Beta ? "nfsw_beta" : "nfsw",
-                        SmallImageText = string.Empty,
-                        SmallImageKey = "files"
-                    };
-                    Presence.Buttons = ButtonsList.ToArray();
-                }
-                else if (RPC_State == 8)
-                {
-                    Presence.State = "ModNet Encounterd an Error";
-                    Presence.Details = "In-Launcher: " + Presence_Settings.Launcher_Version;
-                    Presence.Assets = new Assets
-                    {
-                        LargeImageText = "Launcher",
-                        LargeImageKey = RPC_Beta ? "nfsw_beta" : "nfsw",
-                        SmallImageText = string.Empty,
-                        SmallImageKey = "files_error"
-                    };
-                    Presence.Buttons = ButtonsList.ToArray();
-                }
-                else if (RPC_State == 9)
-                {
-                    Presence.State = "Downloading Server Mods";
-                    Presence.Details = "In-Launcher: " + Presence_Settings.Launcher_Version;
-                    Presence.Assets = new Assets
-                    {
-                        LargeImageText = "Launcher",
-                        LargeImageKey = RPC_Beta ? "nfsw_beta" : "nfsw",
-                        SmallImageText = string.Empty,
-                        SmallImageKey = "files"
-                    };
-                    Presence.Buttons = ButtonsList.ToArray();
-                }
-                else if (RPC_State == 10)
-                {
-                    Presence.State = "Server Mod Download Error";
-                    Presence.Details = "In-Launcher: " + Presence_Settings.Launcher_Version;
-                    Presence.Assets = new Assets
-                    {
-                        LargeImageText = "Launcher",
-                        LargeImageKey = RPC_Beta ? "nfsw_beta" : "nfsw",
-                        SmallImageText = string.Empty,
-                        SmallImageKey = "files_error"
-                    };
-                    Presence.Buttons = ButtonsList.ToArray();
-                }
-
-                if (!Download)
-                {
-                    if (RPC_State == 20)
-                    {
+                    case 0:
+                        Presence.State = RPC_Status;
                         Presence.Details = "In-Launcher: " + Presence_Settings.Launcher_Version;
-                        Presence.State = "On Security Center Screen";
                         Presence.Assets = new Assets
                         {
                             LargeImageText = "Launcher",
-                            LargeImageKey = RPC_Beta ? "nfsw_beta" : "nfsw",
-                            SmallImageText = Security_Center_Conversion.RPC(Launcher_Value.Launcher_Security_Center_Codes, false),
-                            SmallImageKey = Security_Center_Conversion.RPC(Launcher_Value.Launcher_Security_Center_Codes)
+                            LargeImageKey = RPC_Beta ? "nfsw_beta" : "nfsw"
                         };
-                    }
-                    else if (RPC_State == 21)
-                    {
+                        break;
+                    case 1:
+                        Download = true;
+                        Presence.State = RPC_Status;
                         Presence.Details = "In-Launcher: " + Presence_Settings.Launcher_Version;
-                        Presence.State = "On Registration Screen";
                         Presence.Assets = new Assets
                         {
                             LargeImageText = "Launcher",
                             LargeImageKey = RPC_Beta ? "nfsw_beta" : "nfsw",
                             SmallImageText = string.Empty,
-                            SmallImageKey = "screen_register"
+                            SmallImageKey = "files_success"
                         };
-                    }
-                    else if (RPC_State == 22)
-                    {
-                        Presence.Details = "In-Launcher: " + Presence_Settings.Launcher_Version;
-                        Presence.State = "On Settings Screen";
-                        Presence.Assets = new Assets
-                        {
-                            LargeImageText = "Launcher",
-                            LargeImageKey = RPC_Beta ? "nfsw_beta" : "nfsw",
-                            SmallImageText = string.Empty,
-                            SmallImageKey = "screen_settings"
-                        };
-                    }
-                    else if (RPC_State == 23)
-                    {
-                        Presence.Details = "In-Launcher: " + Presence_Settings.Launcher_Version;
-                        Presence.State = "On User XML Editor Screen";
-                        Presence.Assets = new Assets
-                        {
-                            LargeImageText = "Launcher",
-                            LargeImageKey = RPC_Beta ? "nfsw_beta" : "nfsw",
-                            SmallImageText = string.Empty,
-                            SmallImageKey = "screen_uxe"
-                        };
-                    }
-                    else if (RPC_State == 24)
-                    {
-                        Presence.Details = "In-Launcher: " + Presence_Settings.Launcher_Version;
-                        Presence.State = "On Verify Game Files Screen";
-                        Presence.Assets = new Assets
-                        {
-                            LargeImageText = "Launcher",
-                            LargeImageKey = RPC_Beta ? "nfsw_beta" : "nfsw",
-                            SmallImageText = string.Empty,
-                            SmallImageKey = "screen_verify"
-                        };
-                    }
-                    else if (RPC_State == 25)
-                    {
-                        Presence.Details = "In-Launcher: " + Presence_Settings.Launcher_Version;
-                        Presence.State = "Verifying Game Files";
-                        Presence.Assets = new Assets
-                        {
-                            LargeImageText = "Launcher",
-                            LargeImageKey = RPC_Beta ? "nfsw_beta" : "nfsw",
-                            SmallImageText = string.Empty,
-                            SmallImageKey = "verify_files_scan"
-                        };
-                    }
-                    else if (RPC_State == 26)
-                    {
-                        Presence.Details = "In-Launcher: " + Presence_Settings.Launcher_Version;
-                        Presence.State = "Downloaded " + RPC_Status + " Missing Game Files";
-                        Presence.Assets = new Assets
-                        {
-                            LargeImageText = "Launcher",
-                            LargeImageKey = RPC_Beta ? "nfsw_beta" : "nfsw",
-                            SmallImageText = string.Empty,
-                            SmallImageKey = "verify_files_bad"
-                        };
-                    }
-                    else if (RPC_State == 27)
-                    {
-                        Presence.Details = "In-Launcher: " + Presence_Settings.Launcher_Version;
-                        Presence.State = "Finished Validating Game Files";
-                        Presence.Assets = new Assets
-                        {
-                            LargeImageText = "Launcher",
-                            LargeImageKey = RPC_Beta ? "nfsw_beta" : "nfsw",
-                            SmallImageText = string.Empty,
-                            SmallImageKey = "verify_files_good"
-                        };
-                    }
-                    else if (RPC_State == 28)
-                    {
-                        Presence.State = Launcher_Value.Game_Server_Name;
-                        Presence.Details = "In-Game";
-                        Presence.Assets = new Assets
-                        {
-                            LargeImageText = "Need for Speed: World",
-                            LargeImageKey = "nfsw",
-                            SmallImageText = string.Empty,
-                            SmallImageKey = "ingame"
-                        };
-
-                        if (!string.IsNullOrWhiteSpace(Launcher_Value.Launcher_Select_Server_JSON.Server_Social_Home ?? string.Empty) ||
-                            !string.IsNullOrWhiteSpace(Launcher_Value.Launcher_Select_Server_JSON.Server_Social_Discord ?? string.Empty) ||
-                            !string.IsNullOrWhiteSpace(Launcher_Value.Launcher_Select_Server_JSON.Server_Panel ?? string.Empty))
-                        {
-                            ButtonsList.Clear();
-
-                            if (!string.IsNullOrWhiteSpace(Launcher_Value.Launcher_Select_Server_JSON.Server_Panel))
-                            {
-                                /* Let's format it now, if possible */
-                                ButtonsList.Add(new DiscordButton()
-                                {
-                                    Label = "View Panel",
-                                    Url = Launcher_Value.Launcher_Select_Server_JSON.Server_Panel.Split(new string[] { "{sep}" }, StringSplitOptions.None)[0]
-                                });
-                            }
-                            else if (!string.IsNullOrWhiteSpace(Launcher_Value.Launcher_Select_Server_JSON.Server_Social_Home) &&
-                                Launcher_Value.Launcher_Select_Server_JSON.Server_Social_Home != Launcher_Value.Launcher_Select_Server_JSON.Server_Social_Discord)
-                            {
-                                ButtonsList.Add(new DiscordButton()
-                                {
-                                    Label = "Website",
-                                    Url = Launcher_Value.Launcher_Select_Server_JSON.Server_Social_Home
-                                });
-                            }
-
-                            if (!string.IsNullOrWhiteSpace(Launcher_Value.Launcher_Select_Server_JSON.Server_Social_Discord))
-                            {
-                                ButtonsList.Add(new DiscordButton()
-                                {
-                                    Label = "Discord",
-                                    Url = Launcher_Value.Launcher_Select_Server_JSON.Server_Social_Discord
-                                });
-                            }
-                        }
-
                         Presence.Buttons = ButtonsList.ToArray();
-                    }
+                        break;
+                    case 2:
+                        Download = true;
+                        Presence.State = RPC_Status;
+                        Presence.Details = "In-Launcher: " + Presence_Settings.Launcher_Version;
+                        Presence.Assets = new Assets
+                        {
+                            LargeImageText = "Launcher",
+                            LargeImageKey = RPC_Beta ? "nfsw_beta" : "nfsw",
+                            SmallImageText = string.Empty,
+                            SmallImageKey = "files"
+                        };
+                        Presence.Buttons = ButtonsList.ToArray();
+                        break;
+                    case 3:
+                        Download = true;
+                        Presence.State = "Game Download Error";
+                        Presence.Details = "In-Launcher: " + Presence_Settings.Launcher_Version;
+                        Presence.Assets = new Assets
+                        {
+                            LargeImageText = "Launcher",
+                            LargeImageKey = RPC_Beta ? "nfsw_beta" : "nfsw",
+                            SmallImageText = string.Empty,
+                            SmallImageKey = "files_error"
+                        };
+                        Presence.Buttons = ButtonsList.ToArray();
+                        break;
+                    case 4:
+                        Presence.State = "Ready To Race";
+                        Presence.Details = "In-Launcher: " + Presence_Settings.Launcher_Version;
+                        Presence.Assets = new Assets
+                        {
+                            LargeImageText = "Launcher",
+                            LargeImageKey = RPC_Beta ? "nfsw_beta" : "nfsw",
+                            SmallImageText = string.Empty,
+                            SmallImageKey = Certificate_Signature_Validation.Signed() ? "official" : "unofficial"
+                        };
+                        Presence.Buttons = ButtonsList.ToArray();
+                        break;
+                    case 5:
+                        Presence.State = "Checking ModNet";
+                        Presence.Details = "In-Launcher: " + Presence_Settings.Launcher_Version;
+                        Presence.Assets = new Assets
+                        {
+                            LargeImageText = "Launcher",
+                            LargeImageKey = RPC_Beta ? "nfsw_beta" : "nfsw",
+                            SmallImageText = string.Empty,
+                            SmallImageKey = "files_alert"
+                        };
+                        Presence.Buttons = ButtonsList.ToArray();
+                        break;
+                    case 6:
+                        Presence.State = "Has ModNet File: " + RPC_Status;
+                        Presence.Details = "In-Launcher: " + Presence_Settings.Launcher_Version;
+                        Presence.Assets = new Assets
+                        {
+                            LargeImageText = "Launcher",
+                            LargeImageKey = RPC_Beta ? "nfsw_beta" : "nfsw",
+                            SmallImageText = string.Empty,
+                            SmallImageKey = "files_success"
+                        };
+                        Presence.Buttons = ButtonsList.ToArray();
+                        break;
+                    case 7:
+                        Presence.State = "Downloading ModNet Files";
+                        Presence.Details = "In-Launcher: " + Presence_Settings.Launcher_Version;
+                        Presence.Assets = new Assets
+                        {
+                            LargeImageText = "Launcher",
+                            LargeImageKey = RPC_Beta ? "nfsw_beta" : "nfsw",
+                            SmallImageText = string.Empty,
+                            SmallImageKey = "files"
+                        };
+                        Presence.Buttons = ButtonsList.ToArray();
+                        break;
+                    case 8:
+                        Presence.State = "ModNet Encounterd an Error";
+                        Presence.Details = "In-Launcher: " + Presence_Settings.Launcher_Version;
+                        Presence.Assets = new Assets
+                        {
+                            LargeImageText = "Launcher",
+                            LargeImageKey = RPC_Beta ? "nfsw_beta" : "nfsw",
+                            SmallImageText = string.Empty,
+                            SmallImageKey = "files_error"
+                        };
+                        Presence.Buttons = ButtonsList.ToArray();
+                        break;
+                    case 9:
+                        Presence.State = "Downloading Server Mods";
+                        Presence.Details = "In-Launcher: " + Presence_Settings.Launcher_Version;
+                        Presence.Assets = new Assets
+                        {
+                            LargeImageText = "Launcher",
+                            LargeImageKey = RPC_Beta ? "nfsw_beta" : "nfsw",
+                            SmallImageText = string.Empty,
+                            SmallImageKey = "files"
+                        };
+                        Presence.Buttons = ButtonsList.ToArray();
+                        break;
+                    case 10:
+                        Presence.State = "Server Mod Download Error";
+                        Presence.Details = "In-Launcher: " + Presence_Settings.Launcher_Version;
+                        Presence.Assets = new Assets
+                        {
+                            LargeImageText = "Launcher",
+                            LargeImageKey = RPC_Beta ? "nfsw_beta" : "nfsw",
+                            SmallImageText = string.Empty,
+                            SmallImageKey = "files_error"
+                        };
+                        Presence.Buttons = ButtonsList.ToArray();
+                        break;
+                    case 20:
+                        if (!Download)
+                        {
+                            Presence.Details = "In-Launcher: " + Presence_Settings.Launcher_Version;
+                            Presence.State = "On Security Center Screen";
+                            Presence.Assets = new Assets
+                            {
+                                LargeImageText = "Launcher",
+                                LargeImageKey = RPC_Beta ? "nfsw_beta" : "nfsw",
+                                SmallImageText = Security_Center_Conversion.RPC(Launcher_Value.Launcher_Security_Center_Codes, false),
+                                SmallImageKey = Security_Center_Conversion.RPC(Launcher_Value.Launcher_Security_Center_Codes)
+                            };
+                        }
+                        break;
+                    case 21:
+                        if (!Download)
+                        {
+                            Presence.Details = "In-Launcher: " + Presence_Settings.Launcher_Version;
+                            Presence.State = "On Registration Screen";
+                            Presence.Assets = new Assets
+                            {
+                                LargeImageText = "Launcher",
+                                LargeImageKey = RPC_Beta ? "nfsw_beta" : "nfsw",
+                                SmallImageText = string.Empty,
+                                SmallImageKey = "screen_register"
+                            };
+                        }
+                        break;
+                    case 22:
+                        if (!Download)
+                        {
+                            Presence.Details = "In-Launcher: " + Presence_Settings.Launcher_Version;
+                            Presence.State = "On Settings Screen";
+                            Presence.Assets = new Assets
+                            {
+                                LargeImageText = "Launcher",
+                                LargeImageKey = RPC_Beta ? "nfsw_beta" : "nfsw",
+                                SmallImageText = string.Empty,
+                                SmallImageKey = "screen_settings"
+                            };
+                        }
+                        break;
+                    case 23:
+                        if (!Download)
+                        {
+                            Presence.Details = "In-Launcher: " + Presence_Settings.Launcher_Version;
+                            Presence.State = "On User XML Editor Screen";
+                            Presence.Assets = new Assets
+                            {
+                                LargeImageText = "Launcher",
+                                LargeImageKey = RPC_Beta ? "nfsw_beta" : "nfsw",
+                                SmallImageText = string.Empty,
+                                SmallImageKey = "screen_uxe"
+                            };
+                        }
+                        break;
+                    case 24:
+                        if (!Download)
+                        {
+                            Presence.Details = "In-Launcher: " + Presence_Settings.Launcher_Version;
+                            Presence.State = "On Verify Game Files Screen";
+                            Presence.Assets = new Assets
+                            {
+                                LargeImageText = "Launcher",
+                                LargeImageKey = RPC_Beta ? "nfsw_beta" : "nfsw",
+                                SmallImageText = string.Empty,
+                                SmallImageKey = "screen_verify"
+                            };
+                        }
+                        break;
+                    case 25:
+                        if (!Download)
+                        {
+                            Presence.Details = "In-Launcher: " + Presence_Settings.Launcher_Version;
+                            Presence.State = "Verifying Game Files";
+                            Presence.Assets = new Assets
+                            {
+                                LargeImageText = "Launcher",
+                                LargeImageKey = RPC_Beta ? "nfsw_beta" : "nfsw",
+                                SmallImageText = string.Empty,
+                                SmallImageKey = "verify_files_scan"
+                            };
+                        }
+                        break;
+                    case 26:
+                        if (!Download)
+                        {
+                            Presence.Details = "In-Launcher: " + Presence_Settings.Launcher_Version;
+                            Presence.State = "Downloaded " + RPC_Status + " Missing Game Files";
+                            Presence.Assets = new Assets
+                            {
+                                LargeImageText = "Launcher",
+                                LargeImageKey = RPC_Beta ? "nfsw_beta" : "nfsw",
+                                SmallImageText = string.Empty,
+                                SmallImageKey = "verify_files_bad"
+                            };
+                        }
+                        break;
+                    case 27:
+                        if (!Download)
+                        {
+                            Presence.Details = "In-Launcher: " + Presence_Settings.Launcher_Version;
+                            Presence.State = "Finished Validating Game Files";
+                            Presence.Assets = new Assets
+                            {
+                                LargeImageText = "Launcher",
+                                LargeImageKey = RPC_Beta ? "nfsw_beta" : "nfsw",
+                                SmallImageText = string.Empty,
+                                SmallImageKey = "verify_files_good"
+                            };
+                        }
+                        break;
+                    case 28:
+                        if (!Download)
+                        {
+                            Presence.State = Launcher_Value.Game_Server_Name;
+                            Presence.Details = "In-Game";
+                            Presence.Assets = new Assets
+                            {
+                                LargeImageText = "Need for Speed: World",
+                                LargeImageKey = "nfsw",
+                                SmallImageText = string.Empty,
+                                SmallImageKey = "ingame"
+                            };
+
+                            if (!string.IsNullOrWhiteSpace(Launcher_Value.Launcher_Select_Server_JSON.Server_Social_Home ?? string.Empty) ||
+                                !string.IsNullOrWhiteSpace(Launcher_Value.Launcher_Select_Server_JSON.Server_Social_Discord ?? string.Empty) ||
+                                !string.IsNullOrWhiteSpace(Launcher_Value.Launcher_Select_Server_JSON.Server_Panel ?? string.Empty))
+                            {
+                                ButtonsList.Clear();
+
+                                if (!string.IsNullOrWhiteSpace(Launcher_Value.Launcher_Select_Server_JSON.Server_Panel))
+                                {
+                                    /* Let's format it now, if possible */
+                                    ButtonsList.Add(new DiscordButton()
+                                    {
+                                        Label = "View Panel",
+                                        Url = Launcher_Value.Launcher_Select_Server_JSON.Server_Panel.Split(new string[] { "{sep}" }, StringSplitOptions.None)[0]
+                                    });
+                                }
+                                else if (!string.IsNullOrWhiteSpace(Launcher_Value.Launcher_Select_Server_JSON.Server_Social_Home) &&
+                                    Launcher_Value.Launcher_Select_Server_JSON.Server_Social_Home != Launcher_Value.Launcher_Select_Server_JSON.Server_Social_Discord)
+                                {
+                                    ButtonsList.Add(new DiscordButton()
+                                    {
+                                        Label = "Website",
+                                        Url = Launcher_Value.Launcher_Select_Server_JSON.Server_Social_Home
+                                    });
+                                }
+
+                                if (!string.IsNullOrWhiteSpace(Launcher_Value.Launcher_Select_Server_JSON.Server_Social_Discord))
+                                {
+                                    ButtonsList.Add(new DiscordButton()
+                                    {
+                                        Label = "Discord",
+                                        Url = Launcher_Value.Launcher_Select_Server_JSON.Server_Social_Discord
+                                    });
+                                }
+                            }
+
+                            Presence.Buttons = ButtonsList.ToArray();
+                        }
+                        break;
+                    default:
+                        Presence.State = "Unknown Status";
+                        Presence.Details = "In-Launcher: " + Presence_Settings.Launcher_Version;
+                        Presence.Assets = new Assets
+                        {
+                            LargeImageText = "Launcher",
+                            LargeImageKey = RPC_Beta ? "nfsw_beta" : "nfsw"
+                        };
+                        break;
                 }
 
                 if (Running() && Launcher_Value.Launcher_Select_Server_Category != "DEV")
