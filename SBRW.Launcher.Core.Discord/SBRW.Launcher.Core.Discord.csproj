@@ -7,7 +7,7 @@
     <Authors>Soapbox Race World - Launcher Division</Authors>
     <Company>Soapbox Race World</Company>
     <PackageProjectUrl>https://github.com/DavidCarbon-SBRW/SBRW.Launcher.Core.Discord</PackageProjectUrl>
-    <Version>0.0.23</Version>
+    <Version>0.0.24</Version>
     <Description>A Game Launchers Discord RPC Library built within the .NET Standard Framework</Description>
     <RepositoryType>git</RepositoryType>
     <PackageTags>Discord, RPC</PackageTags>
