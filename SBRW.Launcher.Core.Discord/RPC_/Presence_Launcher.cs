@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using DiscordRPC;
+using DiscordRPC.Logging;
 using SBRW.Launcher.Core.Cache;
 using SBRW.Launcher.Core.Extension.Logging_;
 using SBRW.Launcher.Core.Extension.Security_;
@@ -537,7 +538,7 @@ namespace SBRW.Launcher.Core.Discord.RPC_
 
                     Log.Core("DISCORD: Initializing Rich Presence Core" + (!Boot_Or_Reboot ? " For Server" : ""));
 
-                    Client = new DiscordRpcClient(Valid_RPC ? App_ID_Checked.ToString() : "576154452348633108", 1);
+                    Client = new DiscordRpcClient(Valid_RPC ? App_ID_Checked.ToString() : "576154452348633108");
                     Client.OnReady += (sender, e) =>
                     {
                         Log.Info("DISCORD: Discord ready. Detected user: " + e.User.Username + ". Discord version: " + e.Version);
