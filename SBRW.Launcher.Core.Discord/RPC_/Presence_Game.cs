@@ -223,7 +223,11 @@ namespace SBRW.Launcher.Core.Discord.RPC_
                     };
                     Server_Presence.Buttons = Presence_Launcher.ButtonsList.ToArray();
 
-                    if (Presence_Launcher.Running()) Presence_Launcher.Client.SetPresence(Server_Presence);
+                    if (Presence_Launcher.Running())
+                    {
+                        Presence_Launcher.Client.SetPresence(Server_Presence);
+                        Presence_Launcher.User_Details();
+                    }
                 }
 
                 /* IN SAFEHOUSE/FREEROAM */
@@ -254,7 +258,11 @@ namespace SBRW.Launcher.Core.Discord.RPC_
                     Server_Presence.Assets.LargeImageKey = PersonaAvatarId;
                     Server_Presence.Buttons = Presence_Launcher.ButtonsList.ToArray();
 
-                    if (Presence_Launcher.Running()) Presence_Launcher.Client.SetPresence(Server_Presence);
+                    if (Presence_Launcher.Running())
+                    {
+                        Presence_Launcher.Client.SetPresence(Server_Presence);
+                        Presence_Launcher.User_Details();
+                    }
                 }
 
                 if (Uri == "/matchmaking/leavelobby" || Uri == "/matchmaking/declineinvite" || Uri == "/matchmaking/leavequeue")
@@ -278,7 +286,11 @@ namespace SBRW.Launcher.Core.Discord.RPC_
 
                     Launcher_Value.Game_In_Event = false;
 
-                    if (Presence_Launcher.Running()) Presence_Launcher.Client.SetPresence(Server_Presence);
+                    if (Presence_Launcher.Running())
+                    {
+                        Presence_Launcher.Client.SetPresence(Server_Presence);
+                        Presence_Launcher.User_Details();
+                    }
                 }
                 /* IN LOBBY */
                 else if (Uri == "/matchmaking/acceptinvite")
@@ -304,7 +316,11 @@ namespace SBRW.Launcher.Core.Discord.RPC_
                         };
                         Server_Presence.Buttons = Presence_Launcher.ButtonsList.ToArray();
 
-                        if (Presence_Launcher.Running()) Presence_Launcher.Client.SetPresence(Server_Presence);
+                        if (Presence_Launcher.Running())
+                        {
+                            Presence_Launcher.Client.SetPresence(Server_Presence);
+                            Presence_Launcher.User_Details();
+                        }
                     }
                 }
                 else if (Uri == "/matchmaking/joinqueueracenow")
@@ -323,7 +339,11 @@ namespace SBRW.Launcher.Core.Discord.RPC_
                     };
                     Server_Presence.Buttons = Presence_Launcher.ButtonsList.ToArray();
 
-                    if (Presence_Launcher.Running()) Presence_Launcher.Client.SetPresence(Server_Presence);
+                    if (Presence_Launcher.Running())
+                    {
+                        Presence_Launcher.Client.SetPresence(Server_Presence);
+                        Presence_Launcher.User_Details();
+                    }
                 }
 
                 /* IN EVENT */
@@ -345,7 +365,11 @@ namespace SBRW.Launcher.Core.Discord.RPC_
                     };
                     Server_Presence.Buttons = Presence_Launcher.ButtonsList.ToArray();
 
-                    if (Presence_Launcher.Running()) Presence_Launcher.Client.SetPresence(Server_Presence);
+                    if (Presence_Launcher.Running())
+                    {
+                        Presence_Launcher.Client.SetPresence(Server_Presence);
+                        Presence_Launcher.User_Details();
+                    }
                 }
                 else if (Uri == "/event/launched" && Launcher_Value.Game_In_Event)
                 {
@@ -363,7 +387,11 @@ namespace SBRW.Launcher.Core.Discord.RPC_
 
                     AC_Core.Start(Launcher_Value.Launcher_Select_Server_JSON.Server_Enable_Crew_Tags, true, 0, EventID);
 
-                    if (Presence_Launcher.Running()) Presence_Launcher.Client.SetPresence(Server_Presence);
+                    if (Presence_Launcher.Running())
+                    {
+                        Presence_Launcher.Client.SetPresence(Server_Presence);
+                        Presence_Launcher.User_Details();
+                    }
                 }
                 else if (Uri == "/event/arbitration")
                 {
@@ -382,7 +410,12 @@ namespace SBRW.Launcher.Core.Discord.RPC_
                     Server_Presence.Buttons = Presence_Launcher.ButtonsList.ToArray();
 
                     AC_Core.Stop(true);
-                    if (Presence_Launcher.Running()) Presence_Launcher.Client.SetPresence(Server_Presence);
+
+                    if (Presence_Launcher.Running())
+                    {
+                        Presence_Launcher.Client.SetPresence(Server_Presence);
+                        Presence_Launcher.User_Details();
+                    }
                 }
 
                 /* Extending Safehouse */
@@ -406,7 +439,11 @@ namespace SBRW.Launcher.Core.Discord.RPC_
                     Server_Presence.Assets.LargeImageKey = PersonaAvatarId;
                     Server_Presence.Buttons = Presence_Launcher.ButtonsList.ToArray();
 
-                    if (Presence_Launcher.Running()) Presence_Launcher.Client.SetPresence(Server_Presence);
+                    if (Presence_Launcher.Running())
+                    {
+                        Presence_Launcher.Client.SetPresence(Server_Presence);
+                        Presence_Launcher.User_Details();
+                    }
                 }
 
                 /* CARS RELATED */
