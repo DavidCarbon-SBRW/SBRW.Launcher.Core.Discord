@@ -46,6 +46,39 @@ namespace SBRW.Launcher.Core.Discord.RPC_
         public static bool Download { get; set; } = true;
 
         /// <summary>
+        /// Used to programmatically manually invoke Discord RPC
+        /// </summary>
+        public static bool Invoked { get; set; }
+
+        /// <summary>
+        /// Used to Retrive User Details from Discord Client
+        /// </summary>
+        public static void User_Details()
+        {
+            try
+            {
+                if (!Invoked && Client.CurrentUser != null)
+                {
+                    Invoked = true;
+                    Update();
+
+                    if (Launcher_Value.Launcher_Discord_UserID != Client.CurrentUser.ID.ToString())
+                    {
+                        Launcher_Value.Launcher_Discord_UserID = Client.CurrentUser.ID.ToString();
+                    }
+                }
+            }
+            catch (Exception Error)
+            {
+                Log_Detail.OpenLog("DISCORD [User Details]", null, Error, null, true);
+            }
+            finally
+            {
+                GC.Collect();
+            }
+        }
+
+        /// <summary>
         /// Sets the current Status of the Launcher's State<br></br>
         /// </summary>
         /// <remarks>RPC Status<br></br></remarks>
@@ -406,7 +439,8 @@ namespace SBRW.Launcher.Core.Discord.RPC_
                 if (Running() && Launcher_Value.Launcher_Select_Server_Category != "DEV")
                 {
                     Client.SetPresence(Presence);
-                } 
+                    User_Details();
+                }
             }
             catch (Exception Error)
             {
@@ -503,15 +537,18 @@ namespace SBRW.Launcher.Core.Discord.RPC_
 
                     Log.Core("DISCORD: Initializing Rich Presence Core" + (!Boot_Or_Reboot ? " For Server" : ""));
 
-                    Client = new DiscordRpcClient(Valid_RPC ? App_ID_Checked.ToString() : "576154452348633108");
+                    Client = new DiscordRpcClient(Valid_RPC ? App_ID_Checked.ToString() : "576154452348633108", 1);
                     Client.OnReady += (sender, e) =>
                     {
                         Log.Info("DISCORD: Discord ready. Detected user: " + e.User.Username + ". Discord version: " + e.Version);
                         Launcher_Value.Launcher_Discord_UserID = e.User.ID.ToString();
+                        Invoked = true;
                     };
                     Client.OnError += (sender, Error) =>
                     {
-                        Log.Error("DISCORD: " + Error.Message);
+                        Log.Error("DISCORD [Client]: " + Error.Message);
+                        Log.ErrorIC("DISCORD [Client]: " + Error.Code);
+                        Log.ErrorFR("DISCORD [Client]: " + Error);
                     };
                     Client.SkipIdenticalPresence = true;
                     Client.ShutdownOnly = true;
@@ -551,9 +588,20 @@ namespace SBRW.Launcher.Core.Discord.RPC_
         /// <remarks>Starts a new RPC for Launcher</remarks>
         public static void Update()
         {
-            if (Running())
+            try
             {
-                Client.Invoke();
+                if (Running())
+                {
+                    Client.Invoke();
+                }
+            }
+            catch (Exception Error)
+            {
+                Log_Detail.OpenLog("DISCORD [Update]", null, Error, null, true);
+            }
+            finally
+            {
+                GC.Collect();
             }
         }
 
@@ -563,20 +611,36 @@ namespace SBRW.Launcher.Core.Discord.RPC_
         /// <remarks>Clears and Stops RPC</remarks>
         public static void Stop(string RPC_State)
         {
-            if (Running())
+            try
             {
-                try
+                if (Running())
                 {
-                    if (RPC_State == "Close")
+                    try
                     {
-                        Client.ClearPresence();
-                        Log.Core("DISCORD: Client RPC has now been Cleared");
+                        if (RPC_State == "Close")
+                        {
+                            Client.ClearPresence();
+                            Log.Core("DISCORD: Client RPC has now been Cleared");
+                        }
                     }
+                    catch (Exception Error)
+                    {
+                        Log_Detail.OpenLog("DISCORD [ClearPresence]", null, Error, null, true);
+                    }
+
+                    Log.Core("DISCORD: Client RPC Service has been " + RPC_State + "d.");
+                    Client.Dispose();
+                    Client = null;
+                    Invoked = false;
                 }
-                catch { }
-                Log.Core("DISCORD: Client RPC Service has been " + RPC_State + "d.");
-                Client.Dispose();
-                Client = null;
+            }
+            catch (Exception Error)
+            {
+                Log_Detail.OpenLog("DISCORD [Stop]", null, Error, null, true);
+            }
+            finally
+            {
+                GC.Collect();
             }
         }
 
@@ -587,17 +651,32 @@ namespace SBRW.Launcher.Core.Discord.RPC_
         /// <remarks>Server's Discord Application ID</remarks>
         public static string ApplicationID(string FailSafe_App_ID = null)
         {
-            if (!string.IsNullOrWhiteSpace(Launcher_Value.Launcher_Select_Server_JSON.Server_Discord_ID ?? string.Empty))
+            try
             {
-                return Launcher_Value.Launcher_Select_Server_JSON.Server_Discord_ID;
+                if (!string.IsNullOrWhiteSpace(Launcher_Value.Launcher_Select_Server_JSON.Server_Discord_ID ?? string.Empty))
+                {
+                    return Launcher_Value.Launcher_Select_Server_JSON.Server_Discord_ID;
+                }
+                else if (!string.IsNullOrWhiteSpace(Launcher_Value.Launcher_Select_Server_Data.DiscordAppID ?? string.Empty))
+                {
+                    return Launcher_Value.Launcher_Select_Server_Data.DiscordAppID;
+                }
+                else
+                {
+                    return long.TryParse(FailSafe_App_ID, out long App_ID_Checked) ? App_ID_Checked.ToString() : "540651192179752970";
+                }
             }
-            else if (!string.IsNullOrWhiteSpace(Launcher_Value.Launcher_Select_Server_Data.DiscordAppID ?? string.Empty))
+            catch (OverflowException)
             {
-                return Launcher_Value.Launcher_Select_Server_Data.DiscordAppID;
+                return "540651192179752970";
             }
-            else
+            catch (Exception)
             {
-                return long.TryParse(FailSafe_App_ID, out long App_ID_Checked) ? App_ID_Checked.ToString() : "540651192179752970";
+                return "540651192179752970";
+            }
+            finally
+            {
+                GC.Collect();
             }
         }
     }
