@@ -7,11 +7,11 @@ namespace SBRW.Launcher.Core.Discord.FileReadWrite_
 {
     internal class Extract_Resource
     {
-        internal static byte[] AsByte(String File_Name)
+        internal static byte[] AsByte(string File_Name)
         {
             if (string.IsNullOrWhiteSpace(File_Name))
             {
-                return null;
+                return default;
             }
             else
             {
@@ -20,7 +20,10 @@ namespace SBRW.Launcher.Core.Discord.FileReadWrite_
                     Assembly TheRun = Assembly.GetExecutingAssembly();
                     using (Stream LiveStream = TheRun.GetManifestResourceStream(File_Name))
                     {
-                        if (LiveStream == null) { return null; }
+                        if (LiveStream == null) 
+                        { 
+                            return default; 
+                        }
                         else
                         {
                             byte[] ba = new byte[LiveStream.Length];
@@ -32,16 +35,16 @@ namespace SBRW.Launcher.Core.Discord.FileReadWrite_
                 catch (Exception Error)
                 {
                     Log_Detail.OpenLog("Extract Resource AsByte", null, Error, null, true);
-                    return null;
+                    return default;
                 }
             }
         }
 
-        internal static String AsString(String File_Name)
+        internal static string AsString(string File_Name)
         {
             if (string.IsNullOrWhiteSpace(File_Name))
             {
-                return String.Empty;
+                return string.Empty;
             }
             else
             {
@@ -50,7 +53,10 @@ namespace SBRW.Launcher.Core.Discord.FileReadWrite_
                     Assembly TheRun = Assembly.GetExecutingAssembly();
                     using (Stream LiveStream = TheRun.GetManifestResourceStream(File_Name))
                     {
-                        if (LiveStream == null) { return String.Empty; }
+                        if (LiveStream == null) 
+                        { 
+                            return string.Empty; 
+                        }
                         else
                         {
                             using (StreamReader StreamViewer = new StreamReader(LiveStream))
@@ -63,7 +69,7 @@ namespace SBRW.Launcher.Core.Discord.FileReadWrite_
                 catch (Exception Error)
                 {
                     Log_Detail.OpenLog("Extract Resource AsString", null, Error, null, true);
-                    return String.Empty;
+                    return string.Empty;
                 }
             }
         }
