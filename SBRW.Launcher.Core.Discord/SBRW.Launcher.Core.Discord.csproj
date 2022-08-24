@@ -40,7 +40,7 @@
   <ItemGroup>
     <PackageReference Include="DiscordRichPresence" Version="1.0.175" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
-    <PackageReference Include="SBRW.Launcher.Core" Version="0.0.54" />
+    <PackageReference Include="SBRW.Launcher.Core" Version="0.0.59" />
   </ItemGroup>
   
   <ItemGroup>
