@@ -34,7 +34,7 @@ namespace SBRW.Launcher.Core.Discord.FileReadWrite_
                 }
                 catch (Exception Error)
                 {
-                    Log_Detail.OpenLog("Extract Resource AsByte", null, Error, null, true);
+                    Log_Detail.Full("Extract Resource AsByte", Error);
                     return default;
                 }
             }
@@ -68,7 +68,7 @@ namespace SBRW.Launcher.Core.Discord.FileReadWrite_
                 }
                 catch (Exception Error)
                 {
-                    Log_Detail.OpenLog("Extract Resource AsString", null, Error, null, true);
+                    Log_Detail.Full("Extract Resource AsString", Error);
                     return string.Empty;
                 }
             }

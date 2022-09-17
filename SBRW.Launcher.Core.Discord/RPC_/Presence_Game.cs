@@ -62,7 +62,7 @@ namespace SBRW.Launcher.Core.Discord.RPC_
             }
             catch (Exception Error)
             {
-                Log_Detail.OpenLog("DISCORD GAME PRESENCE [GET]", null, Error, null, true);
+                Log_Detail.Full("DISCORD GAME PRESENCE [GET]", Error);
             }
 
             try
@@ -495,7 +495,7 @@ namespace SBRW.Launcher.Core.Discord.RPC_
             }
             catch (Exception Error)
             {
-                Log_Detail.OpenLog("DISCORD GAME PRESENCE", null, Error, null, true);
+                Log_Detail.Full("DISCORD GAME PRESENCE", Error);
             }
             finally
             {
@@ -517,7 +517,7 @@ namespace SBRW.Launcher.Core.Discord.RPC_
             }
             catch (Exception Error)
             {
-                Log_Detail.OpenLog("DISCORD GAME PRESENCE [Task]", string.Empty, Error, string.Empty, true);
+                Log_Detail.Full("DISCORD GAME PRESENCE [Task]", Error);
             }
             finally
             {
@@ -541,7 +541,7 @@ namespace SBRW.Launcher.Core.Discord.RPC_
             }
             catch (Exception Error)
             {
-                Log_Detail.OpenLog("DISCORD GAME PRESENCE [Async]", string.Empty, Error, string.Empty, true);
+                Log_Detail.Full("DISCORD GAME PRESENCE [Async]", Error);
             }
             finally
             {
