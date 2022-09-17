@@ -52,7 +52,7 @@ namespace SBRW.Launcher.Core.Discord.Reference_.List_
             }
             catch (Exception Error)
             {
-                Log_Detail.OpenLog("Event Name RPC Search", null, Error, null, true);
+                Log_Detail.Full("Event Name RPC Search", Error);
             }
             finally
             {
@@ -96,7 +96,7 @@ namespace SBRW.Launcher.Core.Discord.Reference_.List_
             }
             catch (Exception Error)
             {
-                Log_Detail.OpenLog("Event Type RPC Search", null, Error, null, true);
+                Log_Detail.Full("Event Type RPC Search", Error);
             }
             finally
             {

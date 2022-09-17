@@ -52,7 +52,7 @@ namespace SBRW.Launcher.Core.Discord.Reference_.List_
             }
             catch (Exception Error)
             {
-                Log_Detail.OpenLog("Car Name RPC Search", null, Error, null, true);
+                Log_Detail.Full("Car Name RPC Search", Error);
             }
             finally
             {

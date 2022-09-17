@@ -71,7 +71,7 @@ namespace SBRW.Launcher.Core.Discord.RPC_
             }
             catch (Exception Error)
             {
-                Log_Detail.OpenLog("DISCORD [User Details]", null, Error, null, true);
+                Log_Detail.Full("DISCORD [User Details]", Error);
             }
             finally
             {
@@ -445,7 +445,7 @@ namespace SBRW.Launcher.Core.Discord.RPC_
             }
             catch (Exception Error)
             {
-                Log_Detail.OpenLog("DISCORD LAUNCHER PRESENCE", null, Error, null, true);
+                Log_Detail.Full("DISCORD LAUNCHER PRESENCE", Error);
             }
             finally
             {
@@ -484,7 +484,7 @@ namespace SBRW.Launcher.Core.Discord.RPC_
             }
             catch (Exception Error)
             {
-                Log_Detail.OpenLog("DISCORD LAUNCHER PRESENCE [Task]", string.Empty, Error, string.Empty, true);
+                Log_Detail.Full("DISCORD LAUNCHER PRESENCE [Task]", Error);
             }
             finally
             {
@@ -509,7 +509,7 @@ namespace SBRW.Launcher.Core.Discord.RPC_
             }
             catch (Exception Error)
             {
-                Log_Detail.OpenLog("DISCORD LAUNCHER PRESENCE [Async]", string.Empty, Error, string.Empty, true);
+                Log_Detail.Full("DISCORD LAUNCHER PRESENCE [Async]", Error);
             }
             finally
             {
@@ -575,7 +575,7 @@ namespace SBRW.Launcher.Core.Discord.RPC_
             }
             catch (Exception Error)
             {
-                Log_Detail.OpenLog("DISCORD", null, Error, null, true);
+                Log_Detail.Full("DISCORD", Error);
             }
             finally
             {
@@ -598,7 +598,7 @@ namespace SBRW.Launcher.Core.Discord.RPC_
             }
             catch (Exception Error)
             {
-                Log_Detail.OpenLog("DISCORD [Update]", null, Error, null, true);
+                Log_Detail.Full("DISCORD [Update]", Error);
             }
             finally
             {
@@ -626,7 +626,7 @@ namespace SBRW.Launcher.Core.Discord.RPC_
                     }
                     catch (Exception Error)
                     {
-                        Log_Detail.OpenLog("DISCORD [ClearPresence]", null, Error, null, true);
+                        Log_Detail.Full("DISCORD [ClearPresence]", Error);
                     }
 
                     Log.Core("DISCORD: Client RPC Service has been " + RPC_State + "d.");
@@ -637,7 +637,7 @@ namespace SBRW.Launcher.Core.Discord.RPC_
             }
             catch (Exception Error)
             {
-                Log_Detail.OpenLog("DISCORD [Stop]", null, Error, null, true);
+                Log_Detail.Full("DISCORD [Stop]", Error);
             }
             finally
             {
