@@ -31,9 +31,9 @@ namespace SBRW.Launcher.Core.Discord.RPC_
         private static string PersonaAvatarId { get; set; } = string.Empty;
         private static string LoggedPersonaId { get; set; } = string.Empty;
         private static string LauncherRPC { get; set; } = "SBRW Launcher: v" + Presence_Settings.Launcher_Version;
-        private static int PersonaTreasure { get; set; } = 0;
+        private static int PersonaTreasure { get; set; }
         private static int TotalTreasure { get; set; } = 15;
-        private static int THDay { get; set; } = 0;
+        private static int THDay { get; set; }
         private static List<string> PersonaIds { get; set; } = new List<string>();
         private static Dictionary<string, object> QueryParams { get; set; } = new Dictionary<string, object>();
         private static string GETContent { get; set; } = string.Empty;
@@ -553,7 +553,7 @@ namespace SBRW.Launcher.Core.Discord.RPC_
         /// <param name="Uri">Address Path</param>
         /// <param name="Server_Reply">XML string File</param>
         /// <param name="GET">Sub-Path in Address Path</param>
-        public static async void State_Async(string Uri, string Server_Reply, dynamic GET)
+        public static async Task State_Async(string Uri, string Server_Reply, dynamic GET)
         {
             try
             {

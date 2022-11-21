@@ -9,10 +9,6 @@ namespace SBRW.Launcher.Core.Discord.RPC_
     public static class Presence_Settings
     {
         /// <summary>
-        /// 
-        /// </summary>
-        public static bool Mode_Unix { get; set; }
-        /// <summary>
         /// Launcher Version
         /// </summary>
         /// <returns>Application Version</returns>

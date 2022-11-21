@@ -98,10 +98,6 @@ namespace SBRW.Launcher.Core.Discord.Reference_.List_
             {
                 Log_Detail.Full("Event Type RPC Search", Error);
             }
-            finally
-            {
-                GC.Collect();
-            }
 
             /* And if it's not found, do this instead */
             return "gamemode_freeroam";

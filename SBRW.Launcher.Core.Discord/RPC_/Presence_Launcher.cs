@@ -558,7 +558,7 @@ namespace SBRW.Launcher.Core.Discord.RPC_
         /// <remarks>RPC Status</remarks>
         /// <param name="RPC_State">Which RPC Status Text to Set</param>
         /// <param name="RPC_Status">Additional RPC Status Details to Display</param>
-        public static async void Status_Async(int RPC_State, string RPC_Status)
+        public static async Task Status_Async(int RPC_State, string RPC_Status)
         {
             try
             {
@@ -576,7 +576,7 @@ namespace SBRW.Launcher.Core.Discord.RPC_
         /// <param name="RPC_State">Which RPC Status Text to Set</param>
         /// <param name="RPC_Status">Additional RPC Status Details to Display</param>
         /// <param name="RPC_Beta">Displays a Different Icon for Beta Launcher Builds</param>
-        public static async void Status_Async(int RPC_State, string RPC_Status, bool RPC_Beta)
+        public static async Task Status_Async(int RPC_State, string RPC_Status, bool RPC_Beta)
         {
             try
             {
@@ -719,13 +719,20 @@ namespace SBRW.Launcher.Core.Discord.RPC_
                 Log_Detail.Full("DISCORD [Stop]", Error);
             }
         }
-
+        /// <summary>
+        /// Retives Discord Application ID by first checking the Server JSON, with the Server List being Second, and the Fallback being the Launcher's ID
+        /// </summary>
+        /// <remarks>Server's Discord Application ID</remarks>
+        public static string ApplicationID()
+        {
+            return ApplicationID(string.Empty);
+        }
         /// <summary>
         /// Retives Discord Application ID by first checking the Server JSON, with the Server List being Second, and the Fallback being the Launcher's ID
         /// </summary>
         /// <param name="FailSafe_App_ID">Custom Application ID for RPC. Default is Soapbox Race World's App</param>
         /// <remarks>Server's Discord Application ID</remarks>
-        public static string ApplicationID(string FailSafe_App_ID = null)
+        public static string ApplicationID(string FailSafe_App_ID)
         {
             try
             {
