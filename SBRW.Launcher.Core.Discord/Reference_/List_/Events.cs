@@ -11,7 +11,7 @@ namespace SBRW.Launcher.Core.Discord.Reference_.List_
     /// <summary>
     /// Remote/Local RPC Events File
     /// </summary>
-    public class Events
+    public static class Events
     {
         /// <summary>
         /// Cached List for Events ID/Names
@@ -97,10 +97,6 @@ namespace SBRW.Launcher.Core.Discord.Reference_.List_
             catch (Exception Error)
             {
                 Log_Detail.Full("Event Type RPC Search", Error);
-            }
-            finally
-            {
-                GC.Collect();
             }
 
             /* And if it's not found, do this instead */

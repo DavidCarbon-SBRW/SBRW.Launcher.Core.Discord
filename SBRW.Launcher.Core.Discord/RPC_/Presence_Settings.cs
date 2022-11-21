@@ -6,7 +6,7 @@ namespace SBRW.Launcher.Core.Discord.RPC_
     /// <summary>
     /// Discord RPC Local Settings
     /// </summary>
-    public class Presence_Settings
+    public static class Presence_Settings
     {
         /// <summary>
         /// Launcher Version

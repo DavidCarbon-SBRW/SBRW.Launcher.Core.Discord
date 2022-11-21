@@ -14,7 +14,7 @@ namespace SBRW.Launcher.Core.Discord.RPC_
     /// <summary>
     /// Discord RPC Set from Launcher Side
     /// </summary>
-    public class Presence_Launcher
+    public static class Presence_Launcher
     {
         /// <summary>
         /// Launcher's Discord RPC Client
@@ -73,10 +73,6 @@ namespace SBRW.Launcher.Core.Discord.RPC_
             {
                 Log_Detail.Full("DISCORD [User Details]", Error);
             }
-            finally
-            {
-                GC.Collect();
-            }
         }
 
         /// <summary>
@@ -110,9 +106,80 @@ namespace SBRW.Launcher.Core.Discord.RPC_
         /// 28 - "In-Game"<br></br>
         /// </remarks>
         /// </param>
+        public static void Status(int RPC_State)
+        {
+            Status(RPC_State, string.Empty, false);
+        }
+        /// <summary>
+        /// Sets the current Status of the Launcher's State<br></br>
+        /// </summary>
+        /// <remarks>RPC Status<br></br></remarks>
+        /// <param name="RPC_State">
+        /// Int - Which RPC Status Text to Set
+        /// <br></br><br></br>
+        /// <remarks>
+        /// 0 - "Start Up"<br></br>
+        /// 1 - "Unpack Game Files"<br></br>
+        /// 2 - "Download Game Files"<br></br>
+        /// 3 - "Download Game Files Error"<br></br>
+        /// 4 - "Idle Ready"<br></br>
+        /// 5 - "Checking ModNet"<br></br>
+        /// 6 - "ModNet File Check Passed"<br></br>
+        /// 7 - "Download ModNet"<br></br>
+        /// 8 - "Download ModNet Error"<br></br>
+        /// 9 - "Download Server Mods"<br></br>
+        /// 10 - "Download Server Mods Error"<br></br>
+        /// <br></br>
+        /// 20 - "Security Center"<br></br>
+        /// 21 - "Register"<br></br>
+        /// 22 - "Settings"<br></br>
+        /// 23 - "User XML Editor"<br></br>
+        /// 24 - "Verify"<br></br>
+        /// 25 - "Verify Scan"<br></br>
+        /// 26 - "Verify Bad"<br></br>
+        /// 27 - "Verify Good"<br></br>
+        /// 28 - "In-Game"<br></br>
+        /// </remarks>
+        /// </param>
+        /// <param name="RPC_Status">String - Additional RPC Status Details to Display<br></br></param> 
+        public static void Status(int RPC_State, string RPC_Status)
+        {
+            Status(RPC_State, RPC_Status, false);
+        }
+        /// <summary>
+        /// Sets the current Status of the Launcher's State<br></br>
+        /// </summary>
+        /// <remarks>RPC Status<br></br></remarks>
+        /// <param name="RPC_State">
+        /// Int - Which RPC Status Text to Set
+        /// <br></br><br></br>
+        /// <remarks>
+        /// 0 - "Start Up"<br></br>
+        /// 1 - "Unpack Game Files"<br></br>
+        /// 2 - "Download Game Files"<br></br>
+        /// 3 - "Download Game Files Error"<br></br>
+        /// 4 - "Idle Ready"<br></br>
+        /// 5 - "Checking ModNet"<br></br>
+        /// 6 - "ModNet File Check Passed"<br></br>
+        /// 7 - "Download ModNet"<br></br>
+        /// 8 - "Download ModNet Error"<br></br>
+        /// 9 - "Download Server Mods"<br></br>
+        /// 10 - "Download Server Mods Error"<br></br>
+        /// <br></br>
+        /// 20 - "Security Center"<br></br>
+        /// 21 - "Register"<br></br>
+        /// 22 - "Settings"<br></br>
+        /// 23 - "User XML Editor"<br></br>
+        /// 24 - "Verify"<br></br>
+        /// 25 - "Verify Scan"<br></br>
+        /// 26 - "Verify Bad"<br></br>
+        /// 27 - "Verify Good"<br></br>
+        /// 28 - "In-Game"<br></br>
+        /// </remarks>
+        /// </param>
         /// <param name="RPC_Status">String - Additional RPC Status Details to Display<br></br></param>
-        /// <param name="RPC_Beta">Bool - Displays a Different Icon for Beta Launcher Builds<br></br></param>
-        public static void Status(int RPC_State, string RPC_Status = "", bool RPC_Beta = false)
+        /// <param name="RPC_Beta">Bool - Displays a Different Icon for Beta Launcher Builds<br></br></param> 
+        public static void Status(int RPC_State, string RPC_Status, bool RPC_Beta)
         {
             try
             {
@@ -447,10 +514,6 @@ namespace SBRW.Launcher.Core.Discord.RPC_
             {
                 Log_Detail.Full("DISCORD LAUNCHER PRESENCE", Error);
             }
-            finally
-            {
-                GC.Collect();
-            }
         }
 
         /// <summary>
@@ -486,14 +549,26 @@ namespace SBRW.Launcher.Core.Discord.RPC_
             {
                 Log_Detail.Full("DISCORD LAUNCHER PRESENCE [Task]", Error);
             }
-            finally
-            {
-                GC.Collect();
-            }
             
             return Task.CompletedTask;
         }
-
+        /// <summary>
+        /// Sets the current Status of the Launcher's RPC_State
+        /// </summary>
+        /// <remarks>RPC Status</remarks>
+        /// <param name="RPC_State">Which RPC Status Text to Set</param>
+        /// <param name="RPC_Status">Additional RPC Status Details to Display</param>
+        public static async Task Status_Async(int RPC_State, string RPC_Status)
+        {
+            try
+            {
+                await Task.Run(() => Status_Task(new object[] { RPC_State, RPC_Status, false })).ConfigureAwait(false);
+            }
+            catch (Exception Error)
+            {
+                Log_Detail.Full("DISCORD LAUNCHER PRESENCE [Async]", Error);
+            }
+        }
         /// <summary>
         /// Sets the current Status of the Launcher's RPC_State
         /// </summary>
@@ -501,7 +576,7 @@ namespace SBRW.Launcher.Core.Discord.RPC_
         /// <param name="RPC_State">Which RPC Status Text to Set</param>
         /// <param name="RPC_Status">Additional RPC Status Details to Display</param>
         /// <param name="RPC_Beta">Displays a Different Icon for Beta Launcher Builds</param>
-        public static async void Status_Async(int RPC_State, string RPC_Status, bool RPC_Beta = false)
+        public static async Task Status_Async(int RPC_State, string RPC_Status, bool RPC_Beta)
         {
             try
             {
@@ -511,19 +586,31 @@ namespace SBRW.Launcher.Core.Discord.RPC_
             {
                 Log_Detail.Full("DISCORD LAUNCHER PRESENCE [Async]", Error);
             }
-            finally
-            {
-                GC.Collect();
-            }
         }
-
+        /// <summary>
+        /// Starts Game Launcher's RPC Status. If a Discord Client is Running on the Machine, it will Display the status on the User's Profile.
+        /// </summary>
+        /// <remarks>Displays Launcher and Server Status</remarks>
+        public static void Start()
+        {
+            Start(true, string.Empty);
+        }
+        /// <summary>
+        /// Starts Game Launcher's RPC Status. If a Discord Client is Running on the Machine, it will Display the status on the User's Profile.
+        /// </summary>
+        /// <param name="Boot_Or_Reboot">Calls an Invoke to Discord Client</param>
+        /// <remarks>Displays Launcher and Server Status</remarks>
+        public static void Start(bool Boot_Or_Reboot)
+        {
+            Start(Boot_Or_Reboot, string.Empty);
+        }
         /// <summary>
         /// Starts Game Launcher's RPC Status. If a Discord Client is Running on the Machine, it will Display the status on the User's Profile.
         /// </summary>
         /// <param name="Boot_Or_Reboot">Calls an Invoke to Discord Client</param>
         /// <param name="RPC_ID">Custom Application ID for RPC. Default is Soapbox Race World's App</param>
         /// <remarks>Displays Launcher and Server Status</remarks>
-        public static void Start(bool Boot_Or_Reboot = true, string RPC_ID = null)
+        public static void Start(bool Boot_Or_Reboot, string RPC_ID)
         {
             try
             {
@@ -539,13 +626,13 @@ namespace SBRW.Launcher.Core.Discord.RPC_
                     Log.Core("DISCORD: Initializing Rich Presence Core" + (!Boot_Or_Reboot ? " For Server" : ""));
 
                     Client = new DiscordRpcClient(Valid_RPC ? App_ID_Checked.ToString() : "576154452348633108");
-                    Client.OnReady += (sender, e) =>
+                    Client.OnReady += (_, Data) =>
                     {
-                        Log.Info("DISCORD: Discord ready. Detected user: " + e.User.Username + ". Discord version: " + e.Version);
-                        Launcher_Value.Launcher_Discord_UserID = e.User.ID.ToString();
+                        Log.Info("DISCORD: Discord ready. Detected user: " + Data.User.Username + ". Discord version: " + Data.Version);
+                        Launcher_Value.Launcher_Discord_UserID = Data.User.ID.ToString();
                         Invoked = true;
                     };
-                    Client.OnError += (sender, Error) =>
+                    Client.OnError += (_, Error) =>
                     {
                         Log.Error("DISCORD [Client]: " + Error.Message);
                         Log.ErrorIC("DISCORD [Client]: " + Error.Code);
@@ -577,10 +664,6 @@ namespace SBRW.Launcher.Core.Discord.RPC_
             {
                 Log_Detail.Full("DISCORD", Error);
             }
-            finally
-            {
-                GC.Collect();
-            }
         }
 
         /// <summary>
@@ -599,10 +682,6 @@ namespace SBRW.Launcher.Core.Discord.RPC_
             catch (Exception Error)
             {
                 Log_Detail.Full("DISCORD [Update]", Error);
-            }
-            finally
-            {
-                GC.Collect();
             }
         }
 
@@ -639,18 +718,21 @@ namespace SBRW.Launcher.Core.Discord.RPC_
             {
                 Log_Detail.Full("DISCORD [Stop]", Error);
             }
-            finally
-            {
-                GC.Collect();
-            }
         }
-
+        /// <summary>
+        /// Retives Discord Application ID by first checking the Server JSON, with the Server List being Second, and the Fallback being the Launcher's ID
+        /// </summary>
+        /// <remarks>Server's Discord Application ID</remarks>
+        public static string ApplicationID()
+        {
+            return ApplicationID(string.Empty);
+        }
         /// <summary>
         /// Retives Discord Application ID by first checking the Server JSON, with the Server List being Second, and the Fallback being the Launcher's ID
         /// </summary>
         /// <param name="FailSafe_App_ID">Custom Application ID for RPC. Default is Soapbox Race World's App</param>
         /// <remarks>Server's Discord Application ID</remarks>
-        public static string ApplicationID(string FailSafe_App_ID = null)
+        public static string ApplicationID(string FailSafe_App_ID)
         {
             try
             {
@@ -674,10 +756,6 @@ namespace SBRW.Launcher.Core.Discord.RPC_
             catch (Exception)
             {
                 return "540651192179752970";
-            }
-            finally
-            {
-                GC.Collect();
             }
         }
     }
