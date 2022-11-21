@@ -17,7 +17,7 @@ namespace SBRW.Launcher.Core.Discord.RPC_
     /// <summary>
     /// Discord RPC Set from Server Side
     /// </summary>
-    public class Presence_Game
+    public static class Presence_Game
     {
         private static RichPresence Server_Presence { get; set; } = new RichPresence();
         /* Some checks */
@@ -187,10 +187,13 @@ namespace SBRW.Launcher.Core.Discord.RPC_
                     THDay = 0;
 
                     SBRW_XML.LoadXml(Server_Reply);
-                    var xPersonaTreasure = Convert.ToInt32(SBRW_XML.SelectSingleNode("TreasureHuntEventSession/CoinsCollected").InnerText);
-                    for (var i = 0; i < 15; i++)
+                    int xPersonaTreasure = Convert.ToInt32(SBRW_XML.SelectSingleNode("TreasureHuntEventSession/CoinsCollected").InnerText);
+                    for (int i = 0; i < 15; i++)
                     {
-                        if ((xPersonaTreasure & (1 << (15 - i))) != 0) PersonaTreasure++;
+                        if ((xPersonaTreasure & (1 << (15 - i))) != 0)
+                        {
+                            PersonaTreasure++;
+                        }
                     }
 
                     TotalTreasure = Convert.ToInt32(SBRW_XML.SelectSingleNode("TreasureHuntEventSession/NumCoins").InnerText);
@@ -421,13 +424,38 @@ namespace SBRW.Launcher.Core.Discord.RPC_
                 /* Extending Safehouse */
                 if (Uri.Contains("catalog") && InSafeHouse)
                 {
-                    if (GETContent.Contains("categoryName=NFSW_NA_EP_VINYLS_Category")) Server_Presence.Details = "In Safehouse - Applying Vinyls";
-                    if (GETContent.Contains("clientProductType=PAINTS_BODY")) Server_Presence.Details = "In Safehouse - Applying Colors";
-                    if (GETContent.Contains("clientProductType=PERFORMANCEPART")) Server_Presence.Details = "In Safehouse - Applying Performance Parts";
-                    if (GETContent.Contains("clientProductType=VISUALPART")) Server_Presence.Details = "In Safehouse - Applying Visual Parts";
-                    if (GETContent.Contains("clientProductType=SKILLMODPART")) Server_Presence.Details = "In Safehouse - Applying Skillmods";
-                    if (GETContent.Contains("clientProductType=PRESETCAR")) Server_Presence.Details = "In Safehouse - Purchasing Car";
-                    if (GETContent.Contains("categoryName=BoosterPacks")) Server_Presence.Details = "In Safehouse - Opening Cardpacks";
+                    if (GETContent.Contains("categoryName=NFSW_NA_EP_VINYLS_Category"))
+                    {
+                        Server_Presence.Details = "In Safehouse - Applying Vinyls";
+                    }
+                    else if (GETContent.Contains("clientProductType=PAINTS_BODY"))
+                    {
+                        Server_Presence.Details = "In Safehouse - Applying Colors";
+                    }
+                    else if (GETContent.Contains("clientProductType=PERFORMANCEPART"))
+                    {
+                        Server_Presence.Details = "In Safehouse - Applying Performance Parts";
+                    }
+                    else if (GETContent.Contains("clientProductType=VISUALPART"))
+                    {
+                        Server_Presence.Details = "In Safehouse - Applying Visual Parts";
+                    }
+                    else if (GETContent.Contains("clientProductType=SKILLMODPART")) 
+                    {
+                        Server_Presence.Details = "In Safehouse - Applying Skillmods";
+                    }
+                    else if (GETContent.Contains("clientProductType=PRESETCAR")) 
+                    {
+                        Server_Presence.Details = "In Safehouse - Purchasing Car";
+                    }
+                    else if (GETContent.Contains("categoryName=BoosterPacks")) 
+                    {
+                        Server_Presence.Details = "In Safehouse - Opening Cardpacks";
+                    }
+                    else
+                    {
+                        Server_Presence.Details = "In Safehouse - Idle";
+                    }
 
                     Server_Presence.Assets = new Assets
                     {
@@ -497,10 +525,6 @@ namespace SBRW.Launcher.Core.Discord.RPC_
             {
                 Log_Detail.Full("DISCORD GAME PRESENCE", Error);
             }
-            finally
-            {
-                GC.Collect();
-            }
         }
 
         /// <summary>
@@ -518,10 +542,6 @@ namespace SBRW.Launcher.Core.Discord.RPC_
             catch (Exception Error)
             {
                 Log_Detail.Full("DISCORD GAME PRESENCE [Task]", Error);
-            }
-            finally
-            {
-                GC.Collect();
             }
 
             return Task.CompletedTask;
@@ -542,10 +562,6 @@ namespace SBRW.Launcher.Core.Discord.RPC_
             catch (Exception Error)
             {
                 Log_Detail.Full("DISCORD GAME PRESENCE [Async]", Error);
-            }
-            finally
-            {
-                GC.Collect();
             }
         }
     }

@@ -5,7 +5,7 @@ using System.Reflection;
 
 namespace SBRW.Launcher.Core.Discord.FileReadWrite_
 {
-    internal class Extract_Resource
+    internal static class Extract_Resource
     {
         internal static byte[] AsByte(string File_Name)
         {

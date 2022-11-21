@@ -11,7 +11,7 @@ namespace SBRW.Launcher.Core.Discord.Reference_.List_
     /// <summary>
     /// Remote/Local RPC Events File
     /// </summary>
-    public class Events
+    public static class Events
     {
         /// <summary>
         /// Cached List for Events ID/Names

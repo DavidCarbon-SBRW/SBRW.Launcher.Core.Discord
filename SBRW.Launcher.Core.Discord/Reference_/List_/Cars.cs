@@ -11,7 +11,7 @@ namespace SBRW.Launcher.Core.Discord.Reference_.List_
     /// <summary>
     /// Remote/Local RPC Cars File
     /// </summary>
-    public class Cars
+    public static class Cars
     {
         /// <summary>
         /// Cached List for Car ID/Names
