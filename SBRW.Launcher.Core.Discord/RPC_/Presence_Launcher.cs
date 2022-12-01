@@ -519,7 +519,7 @@ namespace SBRW.Launcher.Core.Discord.RPC_
         /// <summary>
         /// Sets the current Status of the Launcher's RPC_State as a Task
         /// </summary>
-        /// <param name="Object_Data"><inheritdoc cref="Status"/></param>
+        /// <param name="Object_Data"><inheritdoc cref="Status(int)"/></param>
         /// <returns>Completed Task Regardless if an Error was Encountered or Not</returns>
         public static Task Status_Task(object Object_Data)
         {

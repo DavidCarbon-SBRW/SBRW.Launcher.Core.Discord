@@ -33,9 +33,8 @@ namespace SBRW.Launcher.Core.Discord.Reference_.List_
                     List_Cached = new List<Json_External_RPC.GME_Event>();
                     List_Cached.AddRange(
                         JsonConvert.DeserializeObject<List<Json_External_RPC.GME_Event>>
-                        (Strings.Encode(
-                            !string.IsNullOrWhiteSpace(List_File) ? List_File :
-                            Extract_Resource.AsString("SBRW.Launcher.Core.Discord.Reference_.Json_.Events.json"))));
+                        (!string.IsNullOrWhiteSpace(List_File) ? List_File.Encode_UTF8() :
+                            "SBRW.Launcher.Core.Discord.Reference_.Json_.Events.json".ToString_UTF8()));
                 }
 
                 int Results_Index = List_Cached.FindIndex(i => string.Equals(i.ID, Event_Id.ToString()));
@@ -77,9 +76,8 @@ namespace SBRW.Launcher.Core.Discord.Reference_.List_
                     List_Cached = new List<Json_External_RPC.GME_Event>();
                     List_Cached.AddRange(
                         JsonConvert.DeserializeObject<List<Json_External_RPC.GME_Event>>
-                        (Strings.Encode(
-                            !string.IsNullOrWhiteSpace(List_File) ? List_File :
-                            Extract_Resource.AsString("SBRW.Launcher.Core.Discord.Reference_.Json_.Events.json"))));
+                        (!string.IsNullOrWhiteSpace(List_File) ? List_File.Encode_UTF8() :
+                            "SBRW.Launcher.Core.Discord.Reference_.Json_.Events.json".ToString_UTF8()));
                 }
 
                 int Results_Index = List_Cached.FindIndex(i => string.Equals(i.ID, Event_Id.ToString()));

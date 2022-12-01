@@ -1,4 +1,5 @@
 ﻿using SBRW.Launcher.Core.Extension.Logging_;
+using SBRW.Launcher.Core.Extension.String_;
 using System;
 using System.IO;
 using System.Reflection;
@@ -7,40 +8,7 @@ namespace SBRW.Launcher.Core.Discord.FileReadWrite_
 {
     internal static class Extract_Resource
     {
-        internal static byte[] AsByte(string File_Name)
-        {
-            if (string.IsNullOrWhiteSpace(File_Name))
-            {
-                return default;
-            }
-            else
-            {
-                try
-                {
-                    Assembly TheRun = Assembly.GetExecutingAssembly();
-                    using (Stream LiveStream = TheRun.GetManifestResourceStream(File_Name))
-                    {
-                        if (LiveStream == null) 
-                        { 
-                            return default; 
-                        }
-                        else
-                        {
-                            byte[] ba = new byte[LiveStream.Length];
-                            LiveStream.Read(ba, 0, ba.Length);
-                            return ba;
-                        }
-                    }
-                }
-                catch (Exception Error)
-                {
-                    Log_Detail.Full("Extract Resource AsByte", Error);
-                    return default;
-                }
-            }
-        }
-
-        internal static string AsString(string File_Name)
+        internal static string ToString_UTF8(this string File_Name)
         {
             if (string.IsNullOrWhiteSpace(File_Name))
             {
@@ -61,7 +29,7 @@ namespace SBRW.Launcher.Core.Discord.FileReadWrite_
                         {
                             using (StreamReader StreamViewer = new StreamReader(LiveStream))
                             {
-                                return StreamViewer.ReadToEnd();
+                                return StreamViewer.ReadToEnd().Encode_UTF8();
                             }
                         }
                     }

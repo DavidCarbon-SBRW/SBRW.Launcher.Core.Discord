@@ -33,9 +33,8 @@ namespace SBRW.Launcher.Core.Discord.Reference_.List_
                     List_Cached = new List<Json_External_RPC.GME_Car>();
                     List_Cached.AddRange(
                         JsonConvert.DeserializeObject<List<Json_External_RPC.GME_Car>>
-                        (Strings.Encode(
-                            !string.IsNullOrWhiteSpace(List_File) ? List_File :
-                            Extract_Resource.AsString("SBRW.Launcher.Core.Discord.Reference_.Json_.Cars.json"))));
+                        (!string.IsNullOrWhiteSpace(List_File) ? List_File.Encode_UTF8() :
+                            "SBRW.Launcher.Core.Discord.Reference_.Json_.Cars.json".ToString_UTF8()));
                 }
 
                 int Results_Index = List_Cached.FindIndex(i => string.Equals(i.ID, Car_Id));
