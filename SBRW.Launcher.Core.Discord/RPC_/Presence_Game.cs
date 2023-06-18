@@ -70,9 +70,9 @@ namespace SBRW.Launcher.Core.Discord.RPC_
                 XmlDocument SBRW_XML = new XmlDocument();
                 string[] splitted_Uri = Uri.Split('/');
 
-                string _serverPanelLink = Launcher_Value.Launcher_Select_Server_JSON.Server_Social_Home;
-                string _serverWebsiteLink = Launcher_Value.Launcher_Select_Server_JSON.Server_Social_Home;
-                string _serverDiscordLink = Launcher_Value.Launcher_Select_Server_JSON.Server_Social_Discord;
+                string _serverPanelLink = Launcher_Value.Launcher_Select_Server_JSON.Server_Social_Home??"";
+                string _serverWebsiteLink = Launcher_Value.Launcher_Select_Server_JSON.Server_Social_Home??"";
+                string _serverDiscordLink = Launcher_Value.Launcher_Select_Server_JSON.Server_Social_Discord??"";
                 if (!string.IsNullOrWhiteSpace(_serverWebsiteLink) || !string.IsNullOrWhiteSpace(_serverDiscordLink) || !string.IsNullOrWhiteSpace(_serverPanelLink))
                 {
                     Presence_Launcher.ButtonsList.Clear();
@@ -224,7 +224,11 @@ namespace SBRW.Launcher.Core.Discord.RPC_
                         SmallImageText = "Treasure Hunt - Day: " + THDay,
                         SmallImageKey = "gamemode_treasure"
                     };
-                    Server_Presence.Buttons = Presence_Launcher.ButtonsList.ToArray();
+
+                    if (Presence_Launcher.ButtonsList.Count > 0 ) 
+                    {
+                        Server_Presence.Buttons = Presence_Launcher.ButtonsList.ToArray();
+                    }
 
                     if (Presence_Launcher.Running())
                     {
@@ -259,7 +263,11 @@ namespace SBRW.Launcher.Core.Discord.RPC_
 
                     Server_Presence.Assets.LargeImageText = Launcher_Value.Game_Persona_Name_Live + " - Level: " + PersonaLevel;
                     Server_Presence.Assets.LargeImageKey = PersonaAvatarId;
-                    Server_Presence.Buttons = Presence_Launcher.ButtonsList.ToArray();
+
+                    if (Presence_Launcher.ButtonsList.Count > 0)
+                    {
+                        Server_Presence.Buttons = Presence_Launcher.ButtonsList.ToArray();
+                    }
 
                     if (Presence_Launcher.Running())
                     {
@@ -280,7 +288,11 @@ namespace SBRW.Launcher.Core.Discord.RPC_
                         SmallImageText = "In-Freeroam",
                         SmallImageKey = "gamemode_freeroam"
                     };
-                    Server_Presence.Buttons = Presence_Launcher.ButtonsList.ToArray();
+
+                    if (Presence_Launcher.ButtonsList.Count > 0)
+                    {
+                        Server_Presence.Buttons = Presence_Launcher.ButtonsList.ToArray();
+                    }
 
                     if (Uri == "/matchmaking/leavelobby")
                     {
@@ -317,7 +329,11 @@ namespace SBRW.Launcher.Core.Discord.RPC_
                             SmallImageText = LauncherRPC,
                             SmallImageKey = Events.Get_Type(Convert.ToInt32(EventID))
                         };
-                        Server_Presence.Buttons = Presence_Launcher.ButtonsList.ToArray();
+
+                        if (Presence_Launcher.ButtonsList.Count > 0)
+                        {
+                            Server_Presence.Buttons = Presence_Launcher.ButtonsList.ToArray();
+                        }
 
                         if (Presence_Launcher.Running())
                         {
@@ -340,7 +356,11 @@ namespace SBRW.Launcher.Core.Discord.RPC_
                         SmallImageText = "In-Freeroam",
                         SmallImageKey = "gamemode_freeroam"
                     };
-                    Server_Presence.Buttons = Presence_Launcher.ButtonsList.ToArray();
+
+                    if (Presence_Launcher.ButtonsList.Count > 0)
+                    {
+                        Server_Presence.Buttons = Presence_Launcher.ButtonsList.ToArray();
+                    }
 
                     if (Presence_Launcher.Running())
                     {
@@ -366,7 +386,11 @@ namespace SBRW.Launcher.Core.Discord.RPC_
                         SmallImageText = LauncherRPC,
                         SmallImageKey = Events.Get_Type(EventID)
                     };
-                    Server_Presence.Buttons = Presence_Launcher.ButtonsList.ToArray();
+
+                    if (Presence_Launcher.ButtonsList.Count > 0)
+                    {
+                        Server_Presence.Buttons = Presence_Launcher.ButtonsList.ToArray();
+                    }
 
                     if (Presence_Launcher.Running())
                     {
@@ -386,7 +410,11 @@ namespace SBRW.Launcher.Core.Discord.RPC_
                         SmallImageText = LauncherRPC,
                         SmallImageKey = Events.Get_Type(EventID)
                     };
-                    Server_Presence.Buttons = Presence_Launcher.ButtonsList.ToArray();
+
+                    if (Presence_Launcher.ButtonsList.Count > 0)
+                    {
+                        Server_Presence.Buttons = Presence_Launcher.ButtonsList.ToArray();
+                    }
 
                     AC_Core.Start(Launcher_Value.Launcher_Select_Server_JSON.Server_Enable_Crew_Tags, true, 0, EventID);
 
@@ -410,7 +438,11 @@ namespace SBRW.Launcher.Core.Discord.RPC_
                         SmallImageText = LauncherRPC,
                         SmallImageKey = Events.Get_Type(EventID)
                     };
-                    Server_Presence.Buttons = Presence_Launcher.ButtonsList.ToArray();
+
+                    if (Presence_Launcher.ButtonsList.Count > 0)
+                    {
+                        Server_Presence.Buttons = Presence_Launcher.ButtonsList.ToArray();
+                    }
 
                     AC_Core.Stop(true);
 
@@ -446,7 +478,7 @@ namespace SBRW.Launcher.Core.Discord.RPC_
                     }
                     else if (GETContent.Contains("clientProductType=PRESETCAR")) 
                     {
-                        Server_Presence.Details = "In Safehouse - Purchasing Car";
+                        Server_Presence.Details = "In Safehouse - Car Dealership";
                     }
                     else if (GETContent.Contains("categoryName=BoosterPacks")) 
                     {
@@ -465,7 +497,11 @@ namespace SBRW.Launcher.Core.Discord.RPC_
                     Server_Presence.State = Launcher_Value.Game_Server_Name;
                     Server_Presence.Assets.LargeImageText = Launcher_Value.Game_Persona_Name_Live + " - Level: " + PersonaLevel;
                     Server_Presence.Assets.LargeImageKey = PersonaAvatarId;
-                    Server_Presence.Buttons = Presence_Launcher.ButtonsList.ToArray();
+
+                    if (Presence_Launcher.ButtonsList.Count > 0)
+                    {
+                        Server_Presence.Buttons = Presence_Launcher.ButtonsList.ToArray();
+                    }
 
                     if (Presence_Launcher.Running())
                     {
