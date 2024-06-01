@@ -23,7 +23,7 @@ namespace SBRW.Launcher.Core.Discord.Reference_.List_
         /// </summary>
         /// <param name="Event_Id">Event ID Number</param>
         /// <returns>Event Name</returns>
-        public static string Get_Name(int Event_Id)
+        public static string Get_Name_Event(this int Event_Id)
         {
             try
             {
@@ -66,7 +66,7 @@ namespace SBRW.Launcher.Core.Discord.Reference_.List_
         /// </summary>
         /// <param name="Event_Id">Event ID Number</param>
         /// <returns>Event Type</returns>
-        public static string Get_Type(int Event_Id)
+        public static string Get_Type_Event(this int Event_Id)
         {
             try
             {

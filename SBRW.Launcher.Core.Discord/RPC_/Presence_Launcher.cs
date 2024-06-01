@@ -5,7 +5,6 @@ using DiscordRPC;
 using DiscordRPC.Logging;
 using SBRW.Launcher.Core.Cache;
 using SBRW.Launcher.Core.Extension.Logging_;
-using SBRW.Launcher.Core.Extension.Security_;
 using SBRW.Launcher.Core.Required.Certificate;
 using DiscordButton = DiscordRPC.Button;
 
@@ -330,20 +329,6 @@ namespace SBRW.Launcher.Core.Discord.RPC_
                         };
                         Presence.Buttons = ButtonsList.ToArray();
                         break;
-                    case 20:
-                        if (!Download)
-                        {
-                            Presence.Details = "In-Launcher: " + Presence_Settings.Launcher_Version;
-                            Presence.State = "On Security Center Screen";
-                            Presence.Assets = new Assets
-                            {
-                                LargeImageText = "Launcher",
-                                LargeImageKey = RPC_Beta ? "nfsw_beta" : "nfsw",
-                                SmallImageText = Security_Center_Conversion.RPC(Launcher_Value.Launcher_Security_Center_Codes, false),
-                                SmallImageKey = Security_Center_Conversion.RPC(Launcher_Value.Launcher_Security_Center_Codes)
-                            };
-                        }
-                        break;
                     case 21:
                         if (!Download)
                         {
@@ -461,17 +446,8 @@ namespace SBRW.Launcher.Core.Discord.RPC_
                             {
                                 ButtonsList.Clear();
 
-                                if (!string.IsNullOrWhiteSpace(Launcher_Value.Launcher_Select_Server_JSON.Server_Panel))
-                                {
-                                    /* Let's format it now, if possible */
-                                    ButtonsList.Add(new DiscordButton()
-                                    {
-                                        Label = "View Panel",
-                                        Url = Launcher_Value.Launcher_Select_Server_JSON.Server_Panel.Split(new string[] { "{sep}" }, StringSplitOptions.None)[0]
-                                    });
-                                }
-                                else if (!string.IsNullOrWhiteSpace(Launcher_Value.Launcher_Select_Server_JSON.Server_Social_Home) &&
-                                    Launcher_Value.Launcher_Select_Server_JSON.Server_Social_Home != Launcher_Value.Launcher_Select_Server_JSON.Server_Social_Discord)
+                                if (!string.IsNullOrWhiteSpace(Launcher_Value.Launcher_Select_Server_JSON.Server_Social_Home) &&
+                                    (Launcher_Value.Launcher_Select_Server_JSON.Server_Social_Home != Launcher_Value.Launcher_Select_Server_JSON.Server_Social_Discord))
                                 {
                                     ButtonsList.Add(new DiscordButton()
                                     {

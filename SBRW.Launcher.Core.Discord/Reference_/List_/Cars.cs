@@ -23,7 +23,7 @@ namespace SBRW.Launcher.Core.Discord.Reference_.List_
         /// </summary>
         /// <param name="Car_Id">Cars ID</param>
         /// <returns>Car Name</returns>
-        public static string Get_Name(string Car_Id)
+        public static string Get_Name_Car(this string Car_Id)
         {
             try
             {

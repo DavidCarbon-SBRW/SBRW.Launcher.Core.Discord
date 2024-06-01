@@ -11,6 +11,8 @@ using SBRW.Launcher.Core.Extension.Logging_;
 using SBRW.Launcher.Core.Discord.Reference_.List_;
 using SBRW.Launcher.Core.Extension.String_;
 using System.Threading.Tasks;
+using System.Threading;
+using System.Timers;
 
 namespace SBRW.Launcher.Core.Discord.RPC_
 {
@@ -37,6 +39,9 @@ namespace SBRW.Launcher.Core.Discord.RPC_
         private static List<string> PersonaIds { get; set; } = new List<string>();
         private static Dictionary<string, object> QueryParams { get; set; } = new Dictionary<string, object>();
         private static string GETContent { get; set; } = string.Empty;
+        /* */
+        private static System.Timers.Timer _timer;
+        private static bool _timerStarted = false;
         /// <summary>
         /// Game Status State<br></br>
         /// </summary>
@@ -70,38 +75,25 @@ namespace SBRW.Launcher.Core.Discord.RPC_
                 XmlDocument SBRW_XML = new XmlDocument();
                 string[] splitted_Uri = Uri.Split('/');
 
-                string _serverPanelLink = Launcher_Value.Launcher_Select_Server_JSON.Server_Social_Home??"";
+                string _serverPanelLink = Launcher_Value.Launcher_Select_Server_JSON.Server_Panel??"";
                 string _serverWebsiteLink = Launcher_Value.Launcher_Select_Server_JSON.Server_Social_Home??"";
                 string _serverDiscordLink = Launcher_Value.Launcher_Select_Server_JSON.Server_Social_Discord??"";
                 if (!string.IsNullOrWhiteSpace(_serverWebsiteLink) || !string.IsNullOrWhiteSpace(_serverDiscordLink) || !string.IsNullOrWhiteSpace(_serverPanelLink))
                 {
                     Presence_Launcher.ButtonsList.Clear();
 
-                    if (!string.IsNullOrWhiteSpace(_serverPanelLink))
+                    if (!string.IsNullOrWhiteSpace(_serverPanelLink) && (Launcher_Value.Game_Persona_Name != string.Empty))
                     {
                         /* Let's format it now, if possible */
-                        if (Launcher_Value.Game_Persona_ID == string.Empty || Launcher_Value.Game_Persona_Name == string.Empty)
-                        {
-                            Presence_Launcher.ButtonsList.Add(new DiscordButton()
-                            {
-                                Label = "View Panel",
-                                Url = _serverPanelLink.Split(new string[] { "{sep}" }, StringSplitOptions.None)[0]
-                            });
-                        }
-                        else
-                        {
-                            _serverPanelLink = _serverPanelLink.Replace("{personaid}", Launcher_Value.Game_Persona_ID);
-                            _serverPanelLink = _serverPanelLink.Replace("{personaname}", Launcher_Value.Game_Persona_Name);
-                            _serverPanelLink = _serverPanelLink.Replace("{sep}", string.Empty);
+                        _serverPanelLink = _serverPanelLink.Replace("{personaname}", Launcher_Value.Game_Persona_Name);
 
-                            Presence_Launcher.ButtonsList.Add(new DiscordButton()
-                            {
-                                Label = "Check " + Launcher_Value.Game_Persona_Name + " on Panel",
-                                Url = _serverPanelLink
-                            });
-                        }
+                        Presence_Launcher.ButtonsList.Add(new DiscordButton()
+                        {
+                            Label = "Check " + Launcher_Value.Game_Persona_Name + " on Panel",
+                            Url = _serverPanelLink
+                        });
                     }
-                    else if (!string.IsNullOrWhiteSpace(_serverWebsiteLink) && _serverWebsiteLink != _serverDiscordLink)
+                    else if (!string.IsNullOrWhiteSpace(_serverWebsiteLink) && (_serverWebsiteLink != _serverDiscordLink))
                     {
                         Presence_Launcher.ButtonsList.Add(new DiscordButton()
                         {
@@ -207,13 +199,17 @@ namespace SBRW.Launcher.Core.Discord.RPC_
                     /* Actively Collection Treasure Hunt Gems */
                     PersonaTreasure++;
 
-                    if (PersonaTreasure != TotalTreasure)
+                    if (PersonaTreasure < TotalTreasure)
                     {
                         Server_Presence.Details = "Collecting Gems (" + PersonaTreasure + " of " + TotalTreasure + ")";
                     }
                     else if (PersonaTreasure == TotalTreasure)
                     {
                         Server_Presence.Details = "Finished Collecting Gems (" + PersonaTreasure + " of " + TotalTreasure + ")";
+                    }
+                    else
+                    {
+                        Server_Presence.Details = "Finished Collecting Gems";
                     }
 
                     Server_Presence.State = LauncherRPC;
@@ -235,6 +231,8 @@ namespace SBRW.Launcher.Core.Discord.RPC_
                         Presence_Launcher.Client.SetPresence(Server_Presence);
                         Presence_Launcher.User_Details();
                     }
+
+                    Treasure_Hunt_Start();
                 }
 
                 /* IN SAFEHOUSE/FREEROAM */
@@ -320,14 +318,14 @@ namespace SBRW.Launcher.Core.Discord.RPC_
                     {
                         EventID = Convert.ToInt32(eventIdNode.InnerText);
 
-                        Server_Presence.Details = "In Lobby: " + Events.Get_Name(EventID);
+                        Server_Presence.Details = "In Lobby: " + EventID.Get_Name_Event();
                         Server_Presence.State = Launcher_Value.Game_Server_Name;
                         Server_Presence.Assets = new Assets
                         {
                             LargeImageText = Launcher_Value.Game_Persona_Name_Live + " - Level: " + PersonaLevel,
                             LargeImageKey = PersonaAvatarId,
                             SmallImageText = LauncherRPC,
-                            SmallImageKey = Events.Get_Type(Convert.ToInt32(EventID))
+                            SmallImageKey = EventID.Get_Type_Event()
                         };
 
                         if (Presence_Launcher.ButtonsList.Count > 0)
@@ -377,14 +375,14 @@ namespace SBRW.Launcher.Core.Discord.RPC_
 
                     EventID = Convert.ToInt32(splitted_Uri[3]);
 
-                    Server_Presence.Details = "Loading Event: " + Events.Get_Name(EventID);
+                    Server_Presence.Details = "Loading Event: " + EventID.Get_Name_Event();
                     Server_Presence.State = Launcher_Value.Game_Server_Name;
                     Server_Presence.Assets = new Assets
                     {
                         LargeImageText = Launcher_Value.Game_Persona_Name_Live + " - Level: " + PersonaLevel,
                         LargeImageKey = PersonaAvatarId,
                         SmallImageText = LauncherRPC,
-                        SmallImageKey = Events.Get_Type(EventID)
+                        SmallImageKey = EventID.Get_Type_Event()
                     };
 
                     if (Presence_Launcher.ButtonsList.Count > 0)
@@ -401,14 +399,14 @@ namespace SBRW.Launcher.Core.Discord.RPC_
                 else if (Uri == "/event/launched" && Launcher_Value.Game_In_Event)
                 {
                     /* Once the Race Starts */
-                    Server_Presence.Details = "In Event: " + Events.Get_Name(EventID);
+                    Server_Presence.Details = "In Event: " + EventID.Get_Name_Event();
                     Server_Presence.State = Launcher_Value.Game_Server_Name;
                     Server_Presence.Assets = new Assets
                     {
                         LargeImageText = Launcher_Value.Game_Persona_Name_Live + " - Level: " + PersonaLevel,
                         LargeImageKey = PersonaAvatarId,
                         SmallImageText = LauncherRPC,
-                        SmallImageKey = Events.Get_Type(EventID)
+                        SmallImageKey = EventID.Get_Type_Event()
                     };
 
                     if (Presence_Launcher.ButtonsList.Count > 0)
@@ -429,14 +427,14 @@ namespace SBRW.Launcher.Core.Discord.RPC_
                     Launcher_Value.Game_In_Event = true;
 
                     /* Once the Race Finishes */
-                    Server_Presence.Details = "Finished Event: " + Events.Get_Name(EventID);
+                    Server_Presence.Details = "Finished Event: " + EventID.Get_Name_Event();
                     Server_Presence.State = Launcher_Value.Game_Server_Name;
                     Server_Presence.Assets = new Assets
                     {
                         LargeImageText = Launcher_Value.Game_Persona_Name_Live + " - Level: " + PersonaLevel,
                         LargeImageKey = PersonaAvatarId,
                         SmallImageText = LauncherRPC,
-                        SmallImageKey = Events.Get_Type(EventID)
+                        SmallImageKey = EventID.Get_Type_Event()
                     };
 
                     if (Presence_Launcher.ButtonsList.Count > 0)
@@ -529,7 +527,7 @@ namespace SBRW.Launcher.Core.Discord.RPC_
                         {
                             if (DefaultID == current)
                             {
-                                Launcher_Value.Game_Car_Name = Cars.Get_Name(node.SelectSingleNode("CustomCar/Name").InnerText.Encode_UTF8());
+                                Launcher_Value.Game_Car_Name = node.SelectSingleNode("CustomCar/Name").InnerText.Encode_UTF8().Get_Name_Car();
                             }
                             current++;
                         }
@@ -548,7 +546,7 @@ namespace SBRW.Launcher.Core.Discord.RPC_
                             {
                                 if (receivedId == node.SelectSingleNode("Id").InnerText)
                                 {
-                                    Launcher_Value.Game_Car_Name = Cars.Get_Name(node.SelectSingleNode("CustomCar/Name").InnerText.Encode_UTF8());
+                                    Launcher_Value.Game_Car_Name = node.SelectSingleNode("CustomCar/Name").InnerText.Encode_UTF8().Get_Name_Car();
                                 }
                             }
                         }
@@ -562,7 +560,86 @@ namespace SBRW.Launcher.Core.Discord.RPC_
                 Log_Detail.Full("DISCORD GAME PRESENCE", Error);
             }
         }
+        private static void OnTimerElapsed(object Object_Args, ElapsedEventArgs Events_Args)
+        {
+            try
+            {
+                if (!Launcher_Value.Game_In_Event)
+                {
+                    /* Display Current Car in Freeroam */
+                    Server_Presence.Details = "Driving " + Launcher_Value.Game_Car_Name;
+                    Server_Presence.State = LauncherRPC;
+                    Server_Presence.Assets = new Assets
+                    {
+                        LargeImageText = Launcher_Value.Game_Persona_Name_Live + " - Level: " + PersonaLevel,
+                        LargeImageKey = PersonaAvatarId,
+                        SmallImageText = "In-Freeroam",
+                        SmallImageKey = "gamemode_freeroam"
+                    };
 
+                    if (Presence_Launcher.ButtonsList.Count > 0)
+                    {
+                        Server_Presence.Buttons = Presence_Launcher.ButtonsList.ToArray();
+                    }
+
+                    if (Presence_Launcher.Running())
+                    {
+                        Presence_Launcher.Client.SetPresence(Server_Presence);
+                        Presence_Launcher.User_Details();
+                    }
+                }
+            }
+            catch (Exception Error)
+            {
+                Log_Detail.Full("DISCORD GAME PRESENCE [TIMER Elapsed]", Error);
+            }
+            finally
+            {
+                Treasure_Hunt_Stop();
+            }
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        private static void Treasure_Hunt_Stop()
+        {
+            try
+            {
+                if (_timerStarted)
+                {
+                    _timer.Stop();
+                    _timer.Dispose();
+                    _timerStarted = false;
+                }
+            }
+            catch (Exception Error)
+            {
+                Log_Detail.Full("DISCORD GAME PRESENCE [TIMER STOP]", Error);
+            }
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        private static void Treasure_Hunt_Start()
+        {
+            try
+            {
+                if (_timerStarted)
+                {
+                    Treasure_Hunt_Stop();
+                }
+
+                _timerStarted = true;
+                _timer = new System.Timers.Timer(60000);
+                _timer.Elapsed += OnTimerElapsed;
+                _timer.AutoReset = false;
+                _timer.Enabled = true;
+            }
+            catch (Exception Error)
+            {
+                Log_Detail.Full("DISCORD GAME PRESENCE [TIMER START]", Error);
+            }
+        }
         /// <summary>
         /// Game Status State as a Task
         /// </summary>
