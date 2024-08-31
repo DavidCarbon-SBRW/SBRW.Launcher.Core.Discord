@@ -255,7 +255,7 @@ namespace SBRW.Launcher.Core.Discord.RPC_
                         Server_Presence.Assets.SmallImageText = "In-Safehouse";
                         Server_Presence.Assets.SmallImageKey = "gamemode_safehouse";
                         Server_Presence.State = Launcher_Value.Game_Server_Name;
-                        Launcher_Value.Game_In_Event = true;;
+                        Launcher_Value.Game_In_Event = true;
                         InSafeHouse = true;
                     }
 
