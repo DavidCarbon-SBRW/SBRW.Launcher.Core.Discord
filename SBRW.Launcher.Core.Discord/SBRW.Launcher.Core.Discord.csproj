@@ -18,6 +18,7 @@
 		<NeutralLanguage>en</NeutralLanguage>
 		<AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<!-- Required: Full Debugging -->
 		<DebugType>full</DebugType>
