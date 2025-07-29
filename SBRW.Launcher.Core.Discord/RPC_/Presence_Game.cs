@@ -5,29 +5,26 @@ using System.Linq;
 using SBRW.Launcher.Core.Cache;
 using SBRW.Launcher.Core.Required.Anti_Cheat;
 using System.Text.RegularExpressions;
-using System.Xml;
 using DiscordButton = DiscordRPC.Button;
 using SBRW.Launcher.Core.Extension.Logging_;
 using SBRW.Launcher.Core.Discord.Reference_.List_;
 using SBRW.Launcher.Core.Extension.String_;
 using System.Threading.Tasks;
-using System.Threading;
 using System.Timers;
+using System.Xml.Linq;
 
 namespace SBRW.Launcher.Core.Discord.RPC_
 {
     /// <summary>
-    /// Discord RPC Set from Server Side
+    /// Represents the Discord Rich Presence state for the game.
     /// </summary>
     public static class Presence_Game
     {
         private static RichPresence Server_Presence { get; set; } = new RichPresence();
-        /* Some checks */
         private static bool CanUpdateProfileField { get; set; }
         private static int EventID { get; set; }
         private static string CarslotsXML { get; set; } = string.Empty;
         private static bool InSafeHouse { get; set; }
-        /* Some data related, can be touched. */
         private static string PersonaId { get; set; } = string.Empty;
         private static string PersonaLevel { get; set; } = string.Empty;
         private static string PersonaAvatarId { get; set; } = string.Empty;
@@ -37,624 +34,180 @@ namespace SBRW.Launcher.Core.Discord.RPC_
         private static int TotalTreasure { get; set; } = 15;
         private static int THDay { get; set; }
         private static List<string> PersonaIds { get; set; } = new List<string>();
-        private static Dictionary<string, object> QueryParams { get; set; } = new Dictionary<string, object>();
-        private static string GETContent { get; set; } = string.Empty;
-        /* */
-        private static System.Timers.Timer _timer;
-        private static bool _timerStarted = false;
+        private static bool _treasureHuntTimerStarted { get; set; }
+        private static System.Timers.Timer _treasureHuntTimer;
+        //Time in Milliseconds (1 Min.)
+        private static double TreasureHuntTimerInterval = 60000;
+
+        // Constants for URIs to improve readability and maintainability
+        private const string UserSecureLoginPersonaUri = "/User/SecureLoginPersona";
+        private const string UserSecureLogoutPersonaUri = "/User/SecureLogoutPersona";
+        private const string UserGetPermanentSessionUri = "/User/GetPermanentSession";
+        private const string DriverPersonaCreatePersonaUri = "/DriverPersona/CreatePersona";
+        private const string DriverPersonaGetPersonaInfoUri = "/DriverPersona/GetPersonaInfo";
+        private const string EventsGetTreasureHuntEventSessionUri = "/events/gettreasurehunteventsession";
+        private const string EventsNotifyCoinCollectedUri = "/events/notifycoincollected";
+        private const string DriverPersonaUpdatePersonaPresenceUri = "/DriverPersona/UpdatePersonaPresence";
+        private const string MatchmakingLeaveLobbyUri = "/matchmaking/leavelobby";
+        private const string MatchmakingDeclineInviteUri = "/matchmaking/declineinvite";
+        private const string MatchmakingLeaveQueueUri = "/matchmaking/leavequeue";
+        private const string MatchmakingAcceptInviteUri = "/matchmaking/acceptinvite";
+        private const string MatchmakingJoinQueueRaceNowUri = "/matchmaking/joinqueueracenow";
+        private const string MatchmakingLaunchEventUriPattern = "/matchmaking/launchevent";
+        private const string EventLaunchedUri = "/event/launched";
+        private const string EventArbitrationUri = "/event/arbitration";
+        private const string CatalogUriContains = "catalog";
+
         /// <summary>
-        /// Game Status State<br></br>
+        /// Represents different states within the safehouse catalog.
         /// </summary>
-        /// <param name="Uri">String - Address Path<br></br></param>
-        /// <param name="Server_Reply">String - XML string File<br></br></param>
-        /// <param name="GET">Dynamic - Sub-Path in Address Path<br></br></param>
-        public static void State(string Uri, string Server_Reply, dynamic GET)
+        private static class SafehouseCatalogStates
         {
-            try
+            public const string Vinyls = "categoryName=NFSW_NA_EP_VINYLS_Category";
+            public const string PerformanceParts = "clientProductType=PERFORMANCEPART";
+            public const string VisualParts = "clientProductType=VISUALPART";
+            public const string Skillmods = "clientProductType=SKILLMODPART";
+            public const string CarDealership = "clientProductType=PRESETCAR";
+            public static class Paints
             {
-                if (QueryParams.Count > 0)
-                {
-                    QueryParams.Clear();
-                }
-
-                foreach (dynamic param in GET)
-                {
-                    dynamic value = GET[param];
-                    QueryParams[param] = value;
-                }
-
-                GETContent = string.Join(";", QueryParams.Select(x => x.Key + "=" + x.Value).ToArray());
+                public const string Section = "categoryName=NFSW_NA_EP_PAINTS_";
+                //Check the following sections for servers that doesn't have the new parameters 
+                public const string Body = "clientProductType=PAINTS_BODY";
+                public const string Wheel = "clientProductType=PAINTS_WHEEL";
             }
-            catch (Exception Error)
+            public static class BoosterPacks
             {
-                Log_Detail.Full("DISCORD GAME PRESENCE [GET]", Error);
-            }
-
-            try
-            {
-                XmlDocument SBRW_XML = new XmlDocument();
-                string[] splitted_Uri = Uri.Split('/');
-
-                string _serverPanelLink = Launcher_Value.Launcher_Select_Server_JSON.Server_Panel??"";
-                string _serverWebsiteLink = Launcher_Value.Launcher_Select_Server_JSON.Server_Social_Home??"";
-                string _serverDiscordLink = Launcher_Value.Launcher_Select_Server_JSON.Server_Social_Discord??"";
-                if (!string.IsNullOrWhiteSpace(_serverWebsiteLink) || !string.IsNullOrWhiteSpace(_serverDiscordLink) || !string.IsNullOrWhiteSpace(_serverPanelLink))
-                {
-                    Presence_Launcher.ButtonsList.Clear();
-
-                    if (!string.IsNullOrWhiteSpace(_serverPanelLink) && (Launcher_Value.Game_Persona_Name != string.Empty))
-                    {
-                        /* Let's format it now, if possible */
-                        _serverPanelLink = _serverPanelLink.Replace("{personaname}", Launcher_Value.Game_Persona_Name);
-
-                        Presence_Launcher.ButtonsList.Add(new DiscordButton()
-                        {
-                            Label = "Check " + Launcher_Value.Game_Persona_Name + " on Panel",
-                            Url = _serverPanelLink
-                        });
-                    }
-                    else if (!string.IsNullOrWhiteSpace(_serverWebsiteLink) && (_serverWebsiteLink != _serverDiscordLink))
-                    {
-                        Presence_Launcher.ButtonsList.Add(new DiscordButton()
-                        {
-                            Label = "Website",
-                            Url = _serverWebsiteLink
-                        });
-                    }
-
-                    if (!string.IsNullOrWhiteSpace(_serverDiscordLink))
-                    {
-                        Presence_Launcher.ButtonsList.Add(new DiscordButton()
-                        {
-                            Label = "Discord",
-                            Url = _serverDiscordLink
-                        });
-                    }
-                }
-
-                if (Uri == "/User/SecureLoginPersona")
-                {
-                    LoggedPersonaId = GETContent.Split(';').Last().Split('=').Last();
-                    CanUpdateProfileField = true;
-                }
-
-                if (Uri == "/User/SecureLogoutPersona")
-                {
-                    PersonaId = string.Empty;
-                    Launcher_Value.Game_Persona_Name_Live = string.Empty;
-                    PersonaLevel = string.Empty;
-                    PersonaAvatarId = string.Empty;
-                    Launcher_Value.Game_Car_Name = string.Empty;
-                    LauncherRPC = string.Empty;
-                    PersonaTreasure = 0;
-                }
-
-                /* FIRST PERSONA EVER LOCALIZED IN CODE */
-                if (Uri == "/User/GetPermanentSession")
-                {
-                    SBRW_XML.LoadXml(Server_Reply);
-
-                    Launcher_Value.Game_Persona_Name_Live = SBRW_XML.SelectSingleNode("UserInfo/personas/ProfileData/Name").InnerText.Replace("¤", "[S]");
-                    PersonaLevel = SBRW_XML.SelectSingleNode("UserInfo/personas/ProfileData/Level").InnerText;
-                    PersonaAvatarId = "avatar_" + SBRW_XML.SelectSingleNode("UserInfo/personas/ProfileData/IconIndex").InnerText;
-                    PersonaId = SBRW_XML.SelectSingleNode("UserInfo/personas/ProfileData/PersonaId").InnerText;
-
-                    /* Let's get rest of PERSONAIDs */
-                    XmlNode UserInfo = SBRW_XML.SelectSingleNode("UserInfo");
-                    XmlNodeList personas = UserInfo.SelectNodes("personas/ProfileData");
-                    foreach (XmlNode node in personas)
-                    {
-                        PersonaIds.Add(node.SelectSingleNode("PersonaId").InnerText);
-                    }
-                }
-
-                /* CREATE/DELETE PERSONA Handler  */
-                if (Uri == "/DriverPersona/CreatePersona")
-                {
-                    SBRW_XML.LoadXml(Server_Reply);
-                    PersonaIds.Add(SBRW_XML.SelectSingleNode("ProfileData/PersonaId").InnerText);
-                }
-
-                /* DRIVING CARNAME */
-                if (Uri == "/DriverPersona/GetPersonaInfo" && CanUpdateProfileField)
-                {
-                    if (LoggedPersonaId == GETContent.Split(';').Last().Split('=').Last())
-                    {
-                        SBRW_XML.LoadXml(Server_Reply);
-                        Launcher_Value.Game_Persona_Name_Live = SBRW_XML.SelectSingleNode("ProfileData/Name").InnerText.Replace("¤", "[S]");
-                        PersonaLevel = SBRW_XML.SelectSingleNode("ProfileData/Level").InnerText;
-                        PersonaAvatarId = "avatar_" + SBRW_XML.SelectSingleNode("ProfileData/IconIndex").InnerText;
-                        PersonaId = SBRW_XML.SelectSingleNode("ProfileData/PersonaId").InnerText;
-
-                        Launcher_Value.Game_Persona_ID = SBRW_XML.SelectSingleNode("ProfileData/PersonaId").InnerText;
-                        Launcher_Value.Game_Persona_Name = SBRW_XML.SelectSingleNode("ProfileData/Name").InnerText.Replace("¤", "[S]");
-                    }
-                }
-
-                if (Uri == "/events/gettreasurehunteventsession")
-                {
-                    /* Treasure Hunt Streak/Gems From Server */
-                    PersonaTreasure = 0;
-                    TotalTreasure = 15;
-                    THDay = 0;
-
-                    SBRW_XML.LoadXml(Server_Reply);
-                    int xPersonaTreasure = Convert.ToInt32(SBRW_XML.SelectSingleNode("TreasureHuntEventSession/CoinsCollected").InnerText);
-                    for (int i = 0; i < 15; i++)
-                    {
-                        if ((xPersonaTreasure & (1 << (15 - i))) != 0)
-                        {
-                            PersonaTreasure++;
-                        }
-                    }
-
-                    TotalTreasure = Convert.ToInt32(SBRW_XML.SelectSingleNode("TreasureHuntEventSession/NumCoins").InnerText);
-                    THDay = Convert.ToInt32(SBRW_XML.SelectSingleNode("TreasureHuntEventSession/Streak").InnerText);
-                }
-
-                if (Uri == "/events/notifycoincollected")
-                {
-                    Launcher_Value.Game_In_Event = false;
-
-                    /* Actively Collection Treasure Hunt Gems */
-                    PersonaTreasure++;
-
-                    if (PersonaTreasure < TotalTreasure)
-                    {
-                        Server_Presence.Details = "Collecting Gems (" + PersonaTreasure + " of " + TotalTreasure + ")";
-                    }
-                    else if (PersonaTreasure == TotalTreasure)
-                    {
-                        Server_Presence.Details = "Finished Collecting Gems (" + PersonaTreasure + " of " + TotalTreasure + ")";
-                    }
-                    else
-                    {
-                        Server_Presence.Details = "Finished Collecting Gems";
-                    }
-
-                    Server_Presence.State = LauncherRPC;
-                    Server_Presence.Assets = new Assets
-                    {
-                        LargeImageText = Launcher_Value.Game_Persona_Name_Live + " - Level: " + PersonaLevel,
-                        LargeImageKey = PersonaAvatarId,
-                        SmallImageText = "Treasure Hunt - Day: " + THDay,
-                        SmallImageKey = "gamemode_treasure"
-                    };
-
-                    if (Presence_Launcher.ButtonsList.Count > 0 ) 
-                    {
-                        Server_Presence.Buttons = Presence_Launcher.ButtonsList.ToArray();
-                    }
-
-                    if (Presence_Launcher.Running())
-                    {
-                        Presence_Launcher.Client.SetPresence(Server_Presence);
-                        Presence_Launcher.User_Details();
-                    }
-
-                    Treasure_Hunt_Start();
-                }
-
-                /* IN SAFEHOUSE/FREEROAM */
-                if (Uri == "/DriverPersona/UpdatePersonaPresence")
-                {
-                    string UpdatePersonaPresenceParam = GETContent.Split(';').Last().Split('=').Last();
-                    Server_Presence.Assets = new Assets();
-                    if (UpdatePersonaPresenceParam == "1")
-                    {
-                        Server_Presence.Details = "Driving " + Launcher_Value.Game_Car_Name;
-                        Server_Presence.Assets.SmallImageText = "In-Freeroam";
-                        Server_Presence.Assets.SmallImageKey = "gamemode_freeroam";
-                        Server_Presence.State = LauncherRPC;
-                        Launcher_Value.Game_In_Event = false;
-                        InSafeHouse = false;
-                    }
-                    else
-                    {
-                        Server_Presence.Details = "In Safehouse";
-                        Server_Presence.Assets.SmallImageText = "In-Safehouse";
-                        Server_Presence.Assets.SmallImageKey = "gamemode_safehouse";
-                        Server_Presence.State = Launcher_Value.Game_Server_Name;
-                        Launcher_Value.Game_In_Event = true;
-                        InSafeHouse = true;
-                    }
-
-                    Server_Presence.Assets.LargeImageText = Launcher_Value.Game_Persona_Name_Live + " - Level: " + PersonaLevel;
-                    Server_Presence.Assets.LargeImageKey = PersonaAvatarId;
-
-                    if (Presence_Launcher.ButtonsList.Count > 0)
-                    {
-                        Server_Presence.Buttons = Presence_Launcher.ButtonsList.ToArray();
-                    }
-
-                    if (Presence_Launcher.Running())
-                    {
-                        Presence_Launcher.Client.SetPresence(Server_Presence);
-                        Presence_Launcher.User_Details();
-                    }
-                }
-
-                if (Uri == "/matchmaking/leavelobby" || Uri == "/matchmaking/declineinvite" || Uri == "/matchmaking/leavequeue")
-                {
-                    /* Display Current Car in Freeroam */
-                    Server_Presence.Details = "Driving " + Launcher_Value.Game_Car_Name;
-                    Server_Presence.State = LauncherRPC;
-                    Server_Presence.Assets = new Assets
-                    {
-                        LargeImageText = Launcher_Value.Game_Persona_Name_Live + " - Level: " + PersonaLevel,
-                        LargeImageKey = PersonaAvatarId,
-                        SmallImageText = "In-Freeroam",
-                        SmallImageKey = "gamemode_freeroam"
-                    };
-
-                    if (Presence_Launcher.ButtonsList.Count > 0)
-                    {
-                        Server_Presence.Buttons = Presence_Launcher.ButtonsList.ToArray();
-                    }
-
-                    if (Uri == "/matchmaking/leavelobby")
-                    {
-                        AC_Core.Stop(false);
-                    }
-
-                    Launcher_Value.Game_In_Event = false;
-
-                    if (Presence_Launcher.Running())
-                    {
-                        Presence_Launcher.Client.SetPresence(Server_Presence);
-                        Presence_Launcher.User_Details();
-                    }
-                }
-                /* IN LOBBY */
-                else if (Uri == "/matchmaking/acceptinvite")
-                {
-                    /* Accept (Group/Search) Event Invite */
-                    Launcher_Value.Game_In_Event = true;
-
-                    SBRW_XML.LoadXml(Server_Reply);
-                    XmlNode eventIdNode = SBRW_XML.SelectSingleNode("LobbyInfo/EventId");
-
-                    if (eventIdNode != null)
-                    {
-                        EventID = Convert.ToInt32(eventIdNode.InnerText);
-
-                        Server_Presence.Details = "In Lobby: " + EventID.Get_Name_Event();
-                        Server_Presence.State = Launcher_Value.Game_Server_Name;
-                        Server_Presence.Assets = new Assets
-                        {
-                            LargeImageText = Launcher_Value.Game_Persona_Name_Live + " - Level: " + PersonaLevel,
-                            LargeImageKey = PersonaAvatarId,
-                            SmallImageText = LauncherRPC,
-                            SmallImageKey = EventID.Get_Type_Event()
-                        };
-
-                        if (Presence_Launcher.ButtonsList.Count > 0)
-                        {
-                            Server_Presence.Buttons = Presence_Launcher.ButtonsList.ToArray();
-                        }
-
-                        if (Presence_Launcher.Running())
-                        {
-                            Presence_Launcher.Client.SetPresence(Server_Presence);
-                            Presence_Launcher.User_Details();
-                        }
-                    }
-                }
-                else if (Uri == "/matchmaking/joinqueueracenow")
-                {
-                    Launcher_Value.Game_In_Event = false;
-
-                    /* Searching for Events */
-                    Server_Presence.Details = "Searching for Event";
-                    Server_Presence.State = LauncherRPC;
-                    Server_Presence.Assets = new Assets
-                    {
-                        LargeImageText = Launcher_Value.Game_Persona_Name_Live + " - Level: " + PersonaLevel,
-                        LargeImageKey = PersonaAvatarId,
-                        SmallImageText = "In-Freeroam",
-                        SmallImageKey = "gamemode_freeroam"
-                    };
-
-                    if (Presence_Launcher.ButtonsList.Count > 0)
-                    {
-                        Server_Presence.Buttons = Presence_Launcher.ButtonsList.ToArray();
-                    }
-
-                    if (Presence_Launcher.Running())
-                    {
-                        Presence_Launcher.Client.SetPresence(Server_Presence);
-                        Presence_Launcher.User_Details();
-                    }
-                }
-
-                /* IN EVENT */
-                if (Regex.Match(Uri, "/matchmaking/launchevent").Success)
-                {
-                    /* Singleplayer Event (Launch) */
-                    Launcher_Value.Game_In_Event = true;
-
-                    EventID = Convert.ToInt32(splitted_Uri[3]);
-
-                    Server_Presence.Details = "Loading Event: " + EventID.Get_Name_Event();
-                    Server_Presence.State = Launcher_Value.Game_Server_Name;
-                    Server_Presence.Assets = new Assets
-                    {
-                        LargeImageText = Launcher_Value.Game_Persona_Name_Live + " - Level: " + PersonaLevel,
-                        LargeImageKey = PersonaAvatarId,
-                        SmallImageText = LauncherRPC,
-                        SmallImageKey = EventID.Get_Type_Event()
-                    };
-
-                    if (Presence_Launcher.ButtonsList.Count > 0)
-                    {
-                        Server_Presence.Buttons = Presence_Launcher.ButtonsList.ToArray();
-                    }
-
-                    if (Presence_Launcher.Running())
-                    {
-                        Presence_Launcher.Client.SetPresence(Server_Presence);
-                        Presence_Launcher.User_Details();
-                    }
-                }
-                else if (Uri == "/event/launched" && Launcher_Value.Game_In_Event)
-                {
-                    /* Once the Race Starts */
-                    Server_Presence.Details = "In Event: " + EventID.Get_Name_Event();
-                    Server_Presence.State = Launcher_Value.Game_Server_Name;
-                    Server_Presence.Assets = new Assets
-                    {
-                        LargeImageText = Launcher_Value.Game_Persona_Name_Live + " - Level: " + PersonaLevel,
-                        LargeImageKey = PersonaAvatarId,
-                        SmallImageText = LauncherRPC,
-                        SmallImageKey = EventID.Get_Type_Event()
-                    };
-
-                    if (Presence_Launcher.ButtonsList.Count > 0)
-                    {
-                        Server_Presence.Buttons = Presence_Launcher.ButtonsList.ToArray();
-                    }
-
-                    AC_Core.Start(Launcher_Value.Launcher_Select_Server_JSON.Server_Enable_Crew_Tags, true, 0, EventID);
-
-                    if (Presence_Launcher.Running())
-                    {
-                        Presence_Launcher.Client.SetPresence(Server_Presence);
-                        Presence_Launcher.User_Details();
-                    }
-                }
-                else if (Uri == "/event/arbitration")
-                {
-                    Launcher_Value.Game_In_Event = true;
-
-                    /* Once the Race Finishes */
-                    Server_Presence.Details = "Finished Event: " + EventID.Get_Name_Event();
-                    Server_Presence.State = Launcher_Value.Game_Server_Name;
-                    Server_Presence.Assets = new Assets
-                    {
-                        LargeImageText = Launcher_Value.Game_Persona_Name_Live + " - Level: " + PersonaLevel,
-                        LargeImageKey = PersonaAvatarId,
-                        SmallImageText = LauncherRPC,
-                        SmallImageKey = EventID.Get_Type_Event()
-                    };
-
-                    if (Presence_Launcher.ButtonsList.Count > 0)
-                    {
-                        Server_Presence.Buttons = Presence_Launcher.ButtonsList.ToArray();
-                    }
-
-                    AC_Core.Stop(true);
-
-                    if (Presence_Launcher.Running())
-                    {
-                        Presence_Launcher.Client.SetPresence(Server_Presence);
-                        Presence_Launcher.User_Details();
-                    }
-                }
-
-                /* Extending Safehouse */
-                if (Uri.Contains("catalog") && InSafeHouse)
-                {
-                    if (GETContent.Contains("categoryName=NFSW_NA_EP_VINYLS_Category"))
-                    {
-                        Server_Presence.Details = "In Safehouse - Applying Vinyls";
-                    }
-                    else if (GETContent.Contains("clientProductType=PAINTS_BODY"))
-                    {
-                        Server_Presence.Details = "In Safehouse - Applying Colors";
-                    }
-                    else if (GETContent.Contains("clientProductType=PERFORMANCEPART"))
-                    {
-                        Server_Presence.Details = "In Safehouse - Applying Performance Parts";
-                    }
-                    else if (GETContent.Contains("clientProductType=VISUALPART"))
-                    {
-                        Server_Presence.Details = "In Safehouse - Applying Visual Parts";
-                    }
-                    else if (GETContent.Contains("clientProductType=SKILLMODPART")) 
-                    {
-                        Server_Presence.Details = "In Safehouse - Applying Skillmods";
-                    }
-                    else if (GETContent.Contains("clientProductType=PRESETCAR")) 
-                    {
-                        Server_Presence.Details = "In Safehouse - Car Dealership";
-                    }
-                    else if (GETContent.Contains("categoryName=BoosterPacks")) 
-                    {
-                        Server_Presence.Details = "In Safehouse - Opening Cardpacks";
-                    }
-                    else
-                    {
-                        Server_Presence.Details = "In Safehouse - Idle";
-                    }
-
-                    Server_Presence.Assets = new Assets
-                    {
-                        SmallImageText = "In-Safehouse",
-                        SmallImageKey = "gamemode_safehouse"
-                    };
-                    Server_Presence.State = Launcher_Value.Game_Server_Name;
-                    Server_Presence.Assets.LargeImageText = Launcher_Value.Game_Persona_Name_Live + " - Level: " + PersonaLevel;
-                    Server_Presence.Assets.LargeImageKey = PersonaAvatarId;
-
-                    if (Presence_Launcher.ButtonsList.Count > 0)
-                    {
-                        Server_Presence.Buttons = Presence_Launcher.ButtonsList.ToArray();
-                    }
-
-                    if (Presence_Launcher.Running())
-                    {
-                        Presence_Launcher.Client.SetPresence(Server_Presence);
-                        Presence_Launcher.User_Details();
-                    }
-                }
-
-                /* CARS RELATED */
-                foreach (var single_personaId in PersonaIds)
-                {
-                    if (Regex.Match(Uri, "/personas/" + single_personaId + "/carslots", RegexOptions.IgnoreCase).Success)
-                    {
-                        CarslotsXML = Server_Reply;
-
-                        SBRW_XML.LoadXml(CarslotsXML);
-
-                        int DefaultID = Convert.ToInt32(SBRW_XML.SelectSingleNode("CarSlotInfoTrans/DefaultOwnedCarIndex").InnerText);
-                        int current = 0;
-
-                        XmlNode CarsOwnedByPersona = SBRW_XML.SelectSingleNode("CarSlotInfoTrans/CarsOwnedByPersona");
-                        XmlNodeList OwnedCarTrans = CarsOwnedByPersona.SelectNodes("OwnedCarTrans");
-
-                        foreach (XmlNode node in OwnedCarTrans)
-                        {
-                            if (DefaultID == current)
-                            {
-                                Launcher_Value.Game_Car_Name = node.SelectSingleNode("CustomCar/Name").InnerText.Encode_UTF8().Get_Name_Car();
-                            }
-                            current++;
-                        }
-                    }
-                    if (Regex.Match(Uri, "/personas/" + single_personaId + "/defaultcar", RegexOptions.IgnoreCase).Success)
-                    {
-                        if (splitted_Uri.Last() != "defaultcar")
-                        {
-                            string receivedId = splitted_Uri.Last();
-
-                            SBRW_XML.LoadXml(CarslotsXML);
-                            XmlNode CarsOwnedByPersona = SBRW_XML.SelectSingleNode("CarSlotInfoTrans/CarsOwnedByPersona");
-                            XmlNodeList OwnedCarTrans = CarsOwnedByPersona.SelectNodes("OwnedCarTrans");
-
-                            foreach (XmlNode node in OwnedCarTrans)
-                            {
-                                if (receivedId == node.SelectSingleNode("Id").InnerText)
-                                {
-                                    Launcher_Value.Game_Car_Name = node.SelectSingleNode("CustomCar/Name").InnerText.Encode_UTF8().Get_Name_Car();
-                                }
-                            }
-                        }
-                    }
-                }
-
-                GETContent = string.Empty;
-            }
-            catch (Exception Error)
-            {
-                Log_Detail.Full("DISCORD GAME PRESENCE", Error);
+                public const string v2 = "categoryName=STORE_BOOSTERPACKS";
+                //Check the following sections for servers that doesn't have the new parameters 
+                public const string v1 = "categoryName=BoosterPacks";
             }
         }
-        private static void OnTimerElapsed(object Object_Args, ElapsedEventArgs Events_Args)
-        {
-            try
-            {
-                if (!Launcher_Value.Game_In_Event)
-                {
-                    /* Display Current Car in Freeroam */
-                    Server_Presence.Details = "Driving " + Launcher_Value.Game_Car_Name;
-                    Server_Presence.State = LauncherRPC;
-                    Server_Presence.Assets = new Assets
-                    {
-                        LargeImageText = Launcher_Value.Game_Persona_Name_Live + " - Level: " + PersonaLevel,
-                        LargeImageKey = PersonaAvatarId,
-                        SmallImageText = "In-Freeroam",
-                        SmallImageKey = "gamemode_freeroam"
-                    };
 
-                    if (Presence_Launcher.ButtonsList.Count > 0)
-                    {
-                        Server_Presence.Buttons = Presence_Launcher.ButtonsList.ToArray();
-                    }
-
-                    if (Presence_Launcher.Running())
-                    {
-                        Presence_Launcher.Client.SetPresence(Server_Presence);
-                        Presence_Launcher.User_Details();
-                    }
-                }
-            }
-            catch (Exception Error)
-            {
-                Log_Detail.Full("DISCORD GAME PRESENCE [TIMER Elapsed]", Error);
-            }
-            finally
-            {
-                Treasure_Hunt_Stop();
-            }
-        }
         /// <summary>
-        /// 
+        /// Game Status State
         /// </summary>
-        private static void Treasure_Hunt_Stop()
+        /// <param name="uri">String - Address Path</param>
+        /// <param name="serverReply">String - XML string File</param>
+        /// <param name="getParams">Dynamic - Sub-Path in Address Path</param>
+        public static Task State(string uri, string serverReply, dynamic getParams)
         {
             try
             {
-                if (_timerStarted)
+                // Process GET parameters
+                string queryParams = ProcessGetParams(getParams);
+
+                UpdateDiscordButtons();
+
+                // Use a switch expression or pattern matching for cleaner URI handling
+                switch (uri)
                 {
-                    _timer.Stop();
-                    _timer.Dispose();
-                    _timerStarted = false;
-                }
-            }
-            catch (Exception Error)
-            {
-                Log_Detail.Full("DISCORD GAME PRESENCE [TIMER STOP]", Error);
-            }
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        private static void Treasure_Hunt_Start()
-        {
-            try
-            {
-                if (_timerStarted)
-                {
-                    Treasure_Hunt_Stop();
+                    case UserSecureLoginPersonaUri:
+                        LoggedPersonaId = queryParams.Split(';').Last().Split('=').Last();
+                        CanUpdateProfileField = true;
+                        break;
+                    case UserSecureLogoutPersonaUri:
+                        ResetPersonaData();
+                        break;
+                    case UserGetPermanentSessionUri:
+                        ParsePermanentSession(serverReply);
+                        break;
+                    case DriverPersonaCreatePersonaUri:
+                        ParseCreatePersona(serverReply);
+                        break;
+                    case DriverPersonaGetPersonaInfoUri:
+                        if (CanUpdateProfileField && LoggedPersonaId == queryParams.Split(';').Last().Split('=').Last())
+                        {
+                            ParsePersonaInfo(serverReply);
+                        }
+                        break;
+                    case EventsGetTreasureHuntEventSessionUri:
+                        ParseTreasureHuntSession(serverReply);
+                        break;
+                    case EventsNotifyCoinCollectedUri:
+                        HandleCoinCollection();
+                        break;
+                    case DriverPersonaUpdatePersonaPresenceUri:
+                        HandlePersonaPresenceUpdate(queryParams.Split(';').Last().Split('=').Last());
+                        break;
+                    case MatchmakingLeaveLobbyUri:
+                    case MatchmakingDeclineInviteUri:
+                    case MatchmakingLeaveQueueUri:
+                        HandleLeaveMatchmaking(uri);
+                        break;
+                    case MatchmakingAcceptInviteUri:
+                        HandleAcceptInvite(serverReply);
+                        break;
+                    case MatchmakingJoinQueueRaceNowUri:
+                        HandleJoinQueueRaceNow();
+                        break;
                 }
 
-                _timerStarted = true;
-                _timer = new System.Timers.Timer(60000);
-                _timer.Elapsed += OnTimerElapsed;
-                _timer.AutoReset = false;
-                _timer.Enabled = true;
+                if (Regex.Match(uri, MatchmakingLaunchEventUriPattern).Success)
+                {
+                    HandleLaunchEvent(uri.Split('/'));
+                }
+                if (uri == EventLaunchedUri && Launcher_Value.Game_In_Event)
+                {
+                    HandleEventLaunched();
+                }
+                if (uri == EventArbitrationUri)
+                {
+                    HandleEventArbitration();
+                }
+                if (uri.Contains(CatalogUriContains) && InSafeHouse)
+                {
+                    HandleSafehouseCatalog(queryParams);
+                }
+
+                // Handle car-related updates
+                foreach (var singlePersonaId in PersonaIds)
+                {
+                    if (Regex.Match(uri, $"/personas/{singlePersonaId}/carslots", RegexOptions.IgnoreCase).Success)
+                    {
+                        CarslotsXML = serverReply; // Store the XML for later use if needed
+                        UpdateCarNameFromCarSlots(serverReply);
+                        break; // No need to check other personas once found
+                    }
+                    if (Regex.Match(uri, $"/personas/{singlePersonaId}/defaultcar", RegexOptions.IgnoreCase).Success)
+                    {
+                        var receivedId = uri.Split('/').Last();
+                        if (receivedId != "defaultcar")
+                        {
+                            UpdateDefaultCarName(receivedId);
+                            break; // No need to check other personas once found
+                        }
+                    }
+                }
             }
-            catch (Exception Error)
+            catch (Exception error)
             {
-                Log_Detail.Full("DISCORD GAME PRESENCE [TIMER START]", Error);
+                Log_Detail.Full("DISCORD GAME PRESENCE", error);
             }
+
+            return Task.CompletedTask;
         }
+
         /// <summary>
         /// Game Status State as a Task
         /// </summary>
-        /// <param name="Object_Data"><inheritdoc cref="State"/></param>
+        /// <param name="objectData"><inheritdoc cref="State"/></param>
         /// <returns>Completed Task Regardless if an Error was Encountered or Not</returns>
-        public static Task State_Task(object Object_Data)
+        public static Task State_Task(object objectData)
         {
             try
             {
-                object[] Live_Data = Object_Data as object[];
-                State(Live_Data[0] as string, Live_Data[1] as string, Live_Data[2] as dynamic);
+                if (objectData is object[] liveData && liveData.Length == 3)
+                {
+                    State(liveData[0] as string, liveData[1] as string, liveData[2] as dynamic);
+                }
+                else
+                {
+                    Log_Detail.Full("DISCORD GAME PRESENCE [Task]", new ArgumentException("Invalid objectData format for State_Task."));
+                }
             }
-            catch (Exception Error)
+            catch (Exception error)
             {
-                Log_Detail.Full("DISCORD GAME PRESENCE [Task]", Error);
+                Log_Detail.Full("DISCORD GAME PRESENCE [Task]", error);
             }
 
             return Task.CompletedTask;
@@ -663,19 +216,639 @@ namespace SBRW.Launcher.Core.Discord.RPC_
         /// <summary>
         /// Game Status State
         /// </summary>
-        /// <param name="Uri">Address Path</param>
-        /// <param name="Server_Reply">XML string File</param>
-        /// <param name="GET">Sub-Path in Address Path</param>
-        public static async Task State_Async(string Uri, string Server_Reply, dynamic GET)
+        /// <param name="uri">Address Path</param>
+        /// <param name="serverReply">XML string File</param>
+        /// <param name="get">Sub-Path in Address Path</param>
+        public static async Task State_Async(string uri, string serverReply, dynamic get)
         {
             try
             {
-                await Task.Run(() => State_Task(new object[] { Uri, Server_Reply, GET })).ConfigureAwait(false);
+                await Task.Run(() => State(uri, serverReply, get)).ConfigureAwait(false);
             }
-            catch (Exception Error)
+            catch (Exception error)
             {
-                Log_Detail.Full("DISCORD GAME PRESENCE [Async]", Error);
+                Log_Detail.Full("DISCORD GAME PRESENCE [Async]", error);
             }
         }
+
+        #region Private Helper Methods
+
+        /// <summary>
+        /// Processes dynamic GET parameters into a dictionary.
+        /// </summary>
+        /// <param name="getParams">Dynamic GET parameters.</param>
+        /// <returns>A dictionary of query parameters.</returns>
+        private static string ProcessGetParams(dynamic getParams)
+        {
+            Dictionary<string, object> parameters = new Dictionary<string, object>();
+
+            foreach (dynamic param in getParams)
+            {
+                parameters[param] = getParams[param];
+            }
+
+            return string.Join(";", parameters.Select(x => x.Key + "=" + x.Value).ToArray());
+        }
+
+        /// <summary>
+        /// Updates the Discord buttons based on server links.
+        /// </summary>
+        private static void UpdateDiscordButtons()
+        {
+            Presence_Launcher.ButtonsList.Clear();
+
+            string serverPanelLink = Launcher_Value.Launcher_Select_Server_JSON.Server_Panel ?? string.Empty;
+            string serverWebsiteLink = Launcher_Value.Launcher_Select_Server_JSON.Server_Social_Home ?? string.Empty;
+            string serverDiscordLink = Launcher_Value.Launcher_Select_Server_JSON.Server_Social_Discord ?? string.Empty;
+
+            if (!string.IsNullOrWhiteSpace(serverPanelLink) && !string.IsNullOrEmpty(Launcher_Value.Game_Persona_Name))
+            {
+                serverPanelLink = serverPanelLink.Replace("{personaname}", Launcher_Value.Game_Persona_Name);
+                Presence_Launcher.ButtonsList.Add(new DiscordButton()
+                {
+                    Label = $"Check {Launcher_Value.Game_Persona_Name} on Panel",
+                    Url = serverPanelLink
+                });
+            }
+            else if (!string.IsNullOrWhiteSpace(serverWebsiteLink) && serverWebsiteLink != serverDiscordLink)
+            {
+                Presence_Launcher.ButtonsList.Add(new DiscordButton()
+                {
+                    Label = "Website",
+                    Url = serverWebsiteLink
+                });
+            }
+
+            if (!string.IsNullOrWhiteSpace(serverDiscordLink))
+            {
+                Presence_Launcher.ButtonsList.Add(new DiscordButton()
+                {
+                    Label = "Discord",
+                    Url = serverDiscordLink
+                });
+            }
+        }
+
+        /// <summary>
+        /// Resets persona-related data.
+        /// </summary>
+        private static void ResetPersonaData()
+        {
+            PersonaId = string.Empty;
+            Launcher_Value.Game_Persona_Name_Live = string.Empty;
+            PersonaLevel = string.Empty;
+            PersonaAvatarId = string.Empty;
+            Launcher_Value.Game_Car_Name = string.Empty;
+            LauncherRPC = string.Empty; // This might need review - should LauncherRPC be cleared?
+            PersonaTreasure = 0;
+            PersonaIds.Clear(); // Clear the list of persona IDs
+            CanUpdateProfileField = false; // Reset this flag as well
+        }
+
+        /// <summary>
+        /// Parses the XML reply for GetPermanentSession and updates persona data.
+        /// </summary>
+        /// <param name="serverReply">The XML string from the server.</param>
+        private static void ParsePermanentSession(string serverReply)
+        {
+            try
+            {
+                var xml = XDocument.Parse(serverReply);
+                var userInfo = xml.Element("UserInfo");
+
+                if (userInfo == null) return;
+
+                var profileData = userInfo.Element("personas")?.Element("ProfileData");
+                if (profileData != null)
+                {
+                    Launcher_Value.Game_Persona_Name_Live = profileData.Element("Name")?.Value.Replace("¤", "[S]");
+                    PersonaLevel = profileData.Element("Level")?.Value;
+                    PersonaAvatarId = "avatar_" + profileData.Element("IconIndex")?.Value;
+                    PersonaId = profileData.Element("PersonaId")?.Value;
+                }
+
+                PersonaIds.Clear(); // Clear previous IDs
+                foreach (var personaNode in userInfo.Elements("personas").Elements("ProfileData"))
+                {
+                    PersonaIds.Add(personaNode.Element("PersonaId")?.Value);
+                }
+            }
+            catch (Exception ex)
+            {
+                Log_Detail.Full("DISCORD GAME PRESENCE [ParsePermanentSession]", ex);
+            }
+        }
+
+        /// <summary>
+        /// Parses the XML reply for CreatePersona and adds the new persona ID.
+        /// </summary>
+        /// <param name="serverReply">The XML string from the server.</param>
+        private static void ParseCreatePersona(string serverReply)
+        {
+            try
+            {
+                var xml = XDocument.Parse(serverReply);
+                var personaId = xml.Element("ProfileData")?.Element("PersonaId")?.Value;
+                if (!string.IsNullOrEmpty(personaId))
+                {
+                    PersonaIds.Add(personaId);
+                }
+            }
+            catch (Exception ex)
+            {
+                Log_Detail.Full("DISCORD GAME PRESENCE [ParseCreatePersona]", ex);
+            }
+        }
+
+        /// <summary>
+        /// Parses the XML reply for GetPersonaInfo and updates persona data.
+        /// </summary>
+        /// <param name="serverReply">The XML string from the server.</param>
+        private static void ParsePersonaInfo(string serverReply)
+        {
+            try
+            {
+                var xml = XDocument.Parse(serverReply);
+                var profileData = xml.Element("ProfileData");
+                if (profileData != null)
+                {
+                    Launcher_Value.Game_Persona_Name_Live = profileData.Element("Name")?.Value.Replace("¤", "[S]");
+                    PersonaLevel = profileData.Element("Level")?.Value;
+                    PersonaAvatarId = "avatar_" + profileData.Element("IconIndex")?.Value;
+                    PersonaId = profileData.Element("PersonaId")?.Value;
+
+                    Launcher_Value.Game_Persona_ID = PersonaId;
+                    Launcher_Value.Game_Persona_Name = Launcher_Value.Game_Persona_Name_Live;
+                }
+            }
+            catch (Exception ex)
+            {
+                Log_Detail.Full("DISCORD GAME PRESENCE [ParsePersonaInfo]", ex);
+            }
+        }
+
+        /// <summary>
+        /// Parses the XML reply for Treasure Hunt event session.
+        /// </summary>
+        /// <param name="serverReply">The XML string from the server.</param>
+        private static void ParseTreasureHuntSession(string serverReply)
+        {
+            try
+            {
+                var xml = XDocument.Parse(serverReply);
+                var session = xml.Element("TreasureHuntEventSession");
+                if (session != null)
+                {
+                    PersonaTreasure = 0; // Reset for calculation
+
+                    int xPersonaTreasure = Convert.ToInt32(session.Element("CoinsCollected")?.Value);
+                    for (int i = 0; i < 15; i++)
+                    {
+                        if ((xPersonaTreasure & (1 << (15 - i))) != 0)
+                        {
+                            PersonaTreasure++;
+                        }
+                    }
+
+                    TotalTreasure = Convert.ToInt32(session.Element("NumCoins")?.Value);
+                    THDay = Convert.ToInt32(session.Element("Streak")?.Value);
+                }
+            }
+            catch (Exception ex)
+            {
+                Log_Detail.Full("DISCORD GAME PRESENCE [ParseTreasureHuntSession]", ex);
+            }
+        }
+
+        /// <summary>
+        /// Handles updates when a coin is collected in Treasure Hunt.
+        /// </summary>
+        private static void HandleCoinCollection()
+        {
+            Launcher_Value.Game_In_Event = false;
+            PersonaTreasure++;
+
+            Server_Presence.Details = PersonaTreasure < TotalTreasure
+                ? $"Collecting Gems ({PersonaTreasure} of {TotalTreasure})"
+                : PersonaTreasure == TotalTreasure
+                    ? $"Finished Collecting Gems ({PersonaTreasure} of {TotalTreasure})"
+                    : "Finished Collecting Gems";
+
+            UpdateAndSetPresence(
+                state: LauncherRPC,
+                largeImageText: $"{Launcher_Value.Game_Persona_Name_Live} - Level: {PersonaLevel}",
+                largeImageKey: PersonaAvatarId,
+                smallImageText: $"Treasure Hunt - Day: {THDay}",
+                smallImageKey: "gamemode_treasure"
+            );
+
+            Treasure_Hunt_Start();
+        }
+
+        /// <summary>
+        /// Handles updates for persona presence (safehouse/freeroam).
+        /// </summary>
+        /// <param name="presenceParam">The presence parameter (e.g., "1" for freeroam).</param>
+        private static void HandlePersonaPresenceUpdate(string presenceParam)
+        {
+            Server_Presence.Assets = new Assets(); // Re-initialize assets for clarity
+
+            string details;
+            string smallImageText;
+            string smallImageKey;
+            string state;
+
+            if (presenceParam == "1")
+            {
+                details = $"Driving {Launcher_Value.Game_Car_Name}";
+                smallImageText = "In-Freeroam";
+                smallImageKey = "gamemode_freeroam";
+                state = LauncherRPC;
+                Launcher_Value.Game_In_Event = false;
+                InSafeHouse = false;
+            }
+            else
+            {
+                details = "In Safehouse";
+                smallImageText = "In-Safehouse";
+                smallImageKey = "gamemode_safehouse";
+                state = Launcher_Value.Game_Server_Name;
+                Launcher_Value.Game_In_Event = true;
+                InSafeHouse = true;
+            }
+
+            Server_Presence.Details = details;
+
+            UpdateAndSetPresence(
+                state: state,
+                largeImageText: $"{Launcher_Value.Game_Persona_Name_Live} - Level: {PersonaLevel}",
+                largeImageKey: PersonaAvatarId,
+                smallImageText: smallImageText,
+                smallImageKey: smallImageKey
+            );
+        }
+
+        /// <summary>
+        /// Handles updates when leaving matchmaking or declining an invite.
+        /// </summary>
+        /// <param name="uri">The current URI.</param>
+        private static void HandleLeaveMatchmaking(string uri)
+        {
+            Server_Presence.Details = $"Driving {Launcher_Value.Game_Car_Name}";
+            Server_Presence.State = LauncherRPC;
+
+            UpdateAndSetPresence(
+                state: LauncherRPC,
+                largeImageText: $"{Launcher_Value.Game_Persona_Name_Live} - Level: {PersonaLevel}",
+                largeImageKey: PersonaAvatarId,
+                smallImageText: "In-Freeroam",
+                smallImageKey: "gamemode_freeroam"
+            );
+
+            if (uri == MatchmakingLeaveLobbyUri)
+            {
+                AC_Core.Stop(false);
+            }
+
+            Launcher_Value.Game_In_Event = false;
+        }
+
+        /// <summary>
+        /// Handles updates when accepting a matchmaking invite.
+        /// </summary>
+        /// <param name="serverReply">The XML string from the server.</param>
+        private static void HandleAcceptInvite(string serverReply)
+        {
+            Launcher_Value.Game_In_Event = true;
+            try
+            {
+                var xml = XDocument.Parse(serverReply);
+                var eventIdNode = xml.Element("LobbyInfo")?.Element("EventId");
+
+                if (eventIdNode != null && int.TryParse(eventIdNode.Value, out int parsedEventId))
+                {
+                    EventID = parsedEventId;
+
+                    Server_Presence.Details = $"In Lobby: {EventID.Get_Name_Event()}";
+                    Server_Presence.State = Launcher_Value.Game_Server_Name;
+
+                    UpdateAndSetPresence(
+                        state: Launcher_Value.Game_Server_Name,
+                        largeImageText: $"{Launcher_Value.Game_Persona_Name_Live} - Level: {PersonaLevel}",
+                        largeImageKey: PersonaAvatarId,
+                        smallImageText: LauncherRPC,
+                        smallImageKey: EventID.Get_Type_Event()
+                    );
+                }
+            }
+            catch (Exception ex)
+            {
+                Log_Detail.Full("DISCORD GAME PRESENCE [HandleAcceptInvite]", ex);
+            }
+        }
+
+        /// <summary>
+        /// Handles updates when joining a queue for a race.
+        /// </summary>
+        private static void HandleJoinQueueRaceNow()
+        {
+            Launcher_Value.Game_In_Event = false;
+
+            Server_Presence.Details = "Searching for Event";
+            Server_Presence.State = LauncherRPC;
+
+            UpdateAndSetPresence(
+                state: LauncherRPC,
+                largeImageText: $"{Launcher_Value.Game_Persona_Name_Live} - Level: {PersonaLevel}",
+                largeImageKey: PersonaAvatarId,
+                smallImageText: "In-Freeroam",
+                smallImageKey: "gamemode_freeroam"
+            );
+        }
+
+        /// <summary>
+        /// Handles updates when launching an event.
+        /// </summary>
+        /// <param name="splittedUri">The URI split into segments.</param>
+        private static void HandleLaunchEvent(string[] splittedUri)
+        {
+            Launcher_Value.Game_In_Event = true;
+            EventID = Convert.ToInt32(splittedUri[3]); // Assumes event ID is always at index 3
+
+            Server_Presence.Details = $"Loading Event: {EventID.Get_Name_Event()}";
+            Server_Presence.State = Launcher_Value.Game_Server_Name;
+
+            UpdateAndSetPresence(
+                state: Launcher_Value.Game_Server_Name,
+                largeImageText: $"{Launcher_Value.Game_Persona_Name_Live} - Level: {PersonaLevel}",
+                largeImageKey: PersonaAvatarId,
+                smallImageText: LauncherRPC,
+                smallImageKey: EventID.Get_Type_Event()
+            );
+        }
+
+        /// <summary>
+        /// Handles updates when an event has launched.
+        /// </summary>
+        private static void HandleEventLaunched()
+        {
+            Server_Presence.Details = $"In Event: {EventID.Get_Name_Event()}";
+            Server_Presence.State = Launcher_Value.Game_Server_Name;
+
+            UpdateAndSetPresence(
+                state: Launcher_Value.Game_Server_Name,
+                largeImageText: $"{Launcher_Value.Game_Persona_Name_Live} - Level: {PersonaLevel}",
+                largeImageKey: PersonaAvatarId,
+                smallImageText: LauncherRPC,
+                smallImageKey: EventID.Get_Type_Event()
+            );
+
+            AC_Core.Start(Launcher_Value.Launcher_Select_Server_JSON.Server_Enable_Crew_Tags, true, 0, EventID);
+        }
+
+        /// <summary>
+        /// Handles updates when an event has finished.
+        /// </summary>
+        private static void HandleEventArbitration()
+        {
+            Server_Presence.Details = $"Finished Event: {EventID.Get_Name_Event()}";
+            Server_Presence.State = Launcher_Value.Game_Server_Name;
+
+            UpdateAndSetPresence(
+                state: Launcher_Value.Game_Server_Name,
+                largeImageText: $"{Launcher_Value.Game_Persona_Name_Live} - Level: {PersonaLevel}",
+                largeImageKey: PersonaAvatarId,
+                smallImageText: LauncherRPC,
+                smallImageKey: EventID.Get_Type_Event()
+            );
+            
+            AC_Core.Stop(true);
+            Launcher_Value.Game_In_Event = true;
+        }
+
+        /// <summary>
+        /// Handles updates for different states within the safehouse catalog.
+        /// </summary>
+        /// <param name="getParamContent">The GET parameter content.</param>
+        private static void HandleSafehouseCatalog(string getParamContent)
+        {
+            if (getParamContent.Contains(SafehouseCatalogStates.Vinyls))
+            {
+                Server_Presence.Details = "In Safehouse - Applying Vinyls";
+            }
+            else if (getParamContent.Contains(SafehouseCatalogStates.Paints.Section) ||
+                getParamContent.Contains(SafehouseCatalogStates.Paints.Body) ||
+                getParamContent.Contains(SafehouseCatalogStates.Paints.Wheel))
+            {
+                Server_Presence.Details = "In Safehouse - Applying Paint Colors";
+            }
+            else if (getParamContent.Contains(SafehouseCatalogStates.PerformanceParts))
+            {
+                Server_Presence.Details = "In Safehouse - Applying Performance Parts";
+            }
+            else if (getParamContent.Contains(SafehouseCatalogStates.VisualParts))
+            {
+                Server_Presence.Details = "In Safehouse - Applying Visual Parts";
+            }
+            else if (getParamContent.Contains(SafehouseCatalogStates.Skillmods))
+            {
+                Server_Presence.Details = "In Safehouse - Applying Skillmods";
+            }
+            else if (getParamContent.Contains(SafehouseCatalogStates.CarDealership))
+            {
+                Server_Presence.Details = "In Safehouse - Car Dealership";
+            }
+            else if (getParamContent.Contains(SafehouseCatalogStates.BoosterPacks.v2) ||
+                getParamContent.Contains(SafehouseCatalogStates.BoosterPacks.v1))
+            {
+                Server_Presence.Details = "In Safehouse - Opening Cardpacks";
+            }
+            else
+            {
+                Server_Presence.Details = "In Safehouse - Idle";
+            }
+
+            UpdateAndSetPresence(
+                state: Launcher_Value.Game_Server_Name,
+                largeImageText: $"{Launcher_Value.Game_Persona_Name_Live} - Level: {PersonaLevel}",
+                largeImageKey: PersonaAvatarId,
+                smallImageText: "In-Safehouse",
+                smallImageKey: "gamemode_safehouse"
+            );
+        }
+
+        /// <summary>
+        /// Updates the car name from the provided car slots XML.
+        /// </summary>
+        /// <param name="serverReply">The car slots XML string.</param>
+        private static void UpdateCarNameFromCarSlots(string serverReply)
+        {
+            try
+            {
+                var xml = XDocument.Parse(serverReply);
+                var carSlotInfo = xml.Element("CarSlotInfoTrans");
+                if (carSlotInfo != null)
+                {
+                    int defaultId = Convert.ToInt32(carSlotInfo.Element("DefaultOwnedCarIndex")?.Value);
+                    int current = 0;
+
+                    foreach (var ownedCar in carSlotInfo.Element("CarsOwnedByPersona")?.Elements("OwnedCarTrans") ?? Enumerable.Empty<XElement>())
+                    {
+                        if (defaultId == current)
+                        {
+                            Launcher_Value.Game_Car_Name = ownedCar.Element("CustomCar")?.Element("Name")?.Value.Encode_UTF8().Get_Name_Car();
+                            break;
+                        }
+                        current++;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Log_Detail.Full("DISCORD GAME PRESENCE [UpdateCarNameFromCarSlots]", ex);
+            }
+        }
+
+        /// <summary>
+        /// Updates the default car name based on a received car ID.
+        /// </summary>
+        /// <param name="receivedId">The ID of the default car.</param>
+        private static void UpdateDefaultCarName(string receivedId)
+        {
+            if (string.IsNullOrEmpty(CarslotsXML))
+            {
+                Log_Detail.Full("DISCORD GAME PRESENCE [UpdateDefaultCarName]", new InvalidOperationException("CarslotsXML is empty. Cannot update default car name."));
+                return;
+            }
+
+            try
+            {
+                var xml = XDocument.Parse(CarslotsXML);
+                var carSlotInfo = xml.Element("CarSlotInfoTrans");
+                if (carSlotInfo != null)
+                {
+                    foreach (var ownedCar in carSlotInfo.Element("CarsOwnedByPersona")?.Elements("OwnedCarTrans") ?? Enumerable.Empty<XElement>())
+                    {
+                        if (receivedId == ownedCar.Element("Id")?.Value)
+                        {
+                            Launcher_Value.Game_Car_Name = ownedCar.Element("CustomCar")?.Element("Name")?.Value.Encode_UTF8().Get_Name_Car();
+                            break;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Log_Detail.Full("DISCORD GAME PRESENCE [UpdateDefaultCarName]", ex);
+            }
+        }
+
+        /// <summary>
+        /// Centralized method to update and set Discord Presence.
+        /// </summary>
+        /// <param name="state">The state text.</param>
+        /// <param name="largeImageText">Text for the large image.</param>
+        /// <param name="largeImageKey">Key for the large image.</param>
+        /// <param name="smallImageText">Text for the small image (optional).</param>
+        /// <param name="smallImageKey">Key for the small image (optional).</param>
+        private static void UpdateAndSetPresence(string state, string largeImageText, string largeImageKey, string smallImageText = null, string smallImageKey = null)
+        {
+            Server_Presence.State = state;
+            Server_Presence.Assets = new Assets
+            {
+                LargeImageText = largeImageText,
+                LargeImageKey = largeImageKey,
+                SmallImageText = smallImageText,
+                SmallImageKey = smallImageKey
+            };
+
+            if (Presence_Launcher.ButtonsList.Count > 0)
+            {
+                Server_Presence.Buttons = Presence_Launcher.ButtonsList.ToArray();
+            }
+
+            if (Presence_Launcher.Running())
+            {
+                Presence_Launcher.Client.SetPresence(Server_Presence);
+                Presence_Launcher.User_Details();
+            }
+        }
+
+        private static void OnTreasureHuntTimerElapsed(object sender, ElapsedEventArgs e)
+        {
+            try
+            {
+                // Only update if not in an event.
+                if (!Launcher_Value.Game_In_Event)
+                {
+                    Server_Presence.Details = "Driving " + Launcher_Value.Game_Car_Name;
+                    UpdateAndSetPresence(
+                        state: LauncherRPC,
+                        largeImageText: $"{Launcher_Value.Game_Persona_Name_Live} - Level: {PersonaLevel}",
+                        largeImageKey: PersonaAvatarId,
+                        smallImageText: "In-Freeroam",
+                        smallImageKey: "gamemode_freeroam"
+                    );
+                }
+                else
+                {
+                    Log.Debug("INCORRECT IN_GAME_EVENT STATUS");
+                }
+            }
+            catch (Exception error)
+            {
+                Log_Detail.Full("DISCORD GAME PRESENCE [TIMER Elapsed]", error);
+            }
+            finally
+            {
+                Treasure_Hunt_Stop();
+            }
+        }
+
+        /// <summary>
+        /// Stops the Treasure Hunt timer.
+        /// </summary>
+        private static void Treasure_Hunt_Stop()
+        {
+            try
+            {
+                if (_treasureHuntTimerStarted)
+                {
+                    _treasureHuntTimer.Stop();
+                    _treasureHuntTimer.Dispose();
+                    _treasureHuntTimerStarted = false;
+                }
+            }
+            catch (Exception error)
+            {
+                Log_Detail.Full("DISCORD GAME PRESENCE [TIMER STOP]", error);
+            }
+        }
+
+        /// <summary>
+        /// Starts or restarts the Treasure Hunt timer.
+        /// </summary>
+        private static void Treasure_Hunt_Start()
+        {
+            try
+            {
+                if (_treasureHuntTimerStarted)
+                {
+                    Treasure_Hunt_Stop();
+                }
+
+                _treasureHuntTimerStarted = true;
+                _treasureHuntTimer = new System.Timers.Timer(TreasureHuntTimerInterval);
+                _treasureHuntTimer.Elapsed += OnTreasureHuntTimerElapsed;
+                _treasureHuntTimer.AutoReset = false;
+                _treasureHuntTimer.Enabled = true;
+            }
+            catch (Exception error)
+            {
+                Log_Detail.Full("DISCORD GAME PRESENCE [TIMER START]", error);
+            }
+        }
+
+        #endregion
     }
 }
