@@ -36,32 +36,59 @@ namespace SBRW.Launcher.Core.Discord.RPC_
         private static List<string> PersonaIds { get; set; } = new List<string>();
         private static bool _treasureHuntTimerStarted { get; set; }
         private static System.Timers.Timer _treasureHuntTimer;
-        //Time in Milliseconds (1 Min.)
-        private static double TreasureHuntTimerInterval = 60000;
-
-        // Constants for URIs to improve readability and maintainability
-        private const string UserSecureLoginPersonaUri = "/User/SecureLoginPersona";
-        private const string UserSecureLogoutPersonaUri = "/User/SecureLogoutPersona";
-        private const string UserGetPermanentSessionUri = "/User/GetPermanentSession";
-        private const string DriverPersonaCreatePersonaUri = "/DriverPersona/CreatePersona";
-        private const string DriverPersonaGetPersonaInfoUri = "/DriverPersona/GetPersonaInfo";
-        private const string EventsGetTreasureHuntEventSessionUri = "/events/gettreasurehunteventsession";
-        private const string EventsNotifyCoinCollectedUri = "/events/notifycoincollected";
-        private const string DriverPersonaUpdatePersonaPresenceUri = "/DriverPersona/UpdatePersonaPresence";
-        private const string MatchmakingLeaveLobbyUri = "/matchmaking/leavelobby";
-        private const string MatchmakingDeclineInviteUri = "/matchmaking/declineinvite";
-        private const string MatchmakingLeaveQueueUri = "/matchmaking/leavequeue";
-        private const string MatchmakingAcceptInviteUri = "/matchmaking/acceptinvite";
-        private const string MatchmakingJoinQueueRaceNowUri = "/matchmaking/joinqueueracenow";
-        private const string MatchmakingLaunchEventUriPattern = "/matchmaking/launchevent";
-        private const string EventLaunchedUri = "/event/launched";
-        private const string EventArbitrationUri = "/event/arbitration";
-        private const string CatalogUriContains = "catalog";
-
         /// <summary>
-        /// Represents different states within the safehouse catalog.
+        /// Time in Milliseconds (1 Min.)
         /// </summary>
-        private static class SafehouseCatalogStates
+        private static double TreasureHuntTimerInterval = 60000;
+        /* Constants for URIs to improve readability and maintainability - DavidCarbon */
+        /// <summary>
+        /// Represents in-game SafeHouse catalog Uri string
+        /// </summary>
+        private const string CatalogUri = "catalog";
+        /// <summary>
+        /// Represents different states for the User
+        /// </summary>
+        private static class UserStates
+        {
+            public const string SecureLoginPersona = "/User/SecureLoginPersona";
+            public const string SecureLogoutPersona = "/User/SecureLogoutPersona";
+            public const string GetPermanentSession = "/User/GetPermanentSession";
+        }
+        /// <summary>
+        /// Represents different states DriverPersona
+        /// </summary>
+        private static class DriverPersonaStates
+        {
+            public const string CreatePersona = "/DriverPersona/CreatePersona";
+            public const string GetPersonaInfo = "/DriverPersona/GetPersonaInfo";
+            public const string UpdatePersonaPresence = "/DriverPersona/UpdatePersonaPresence";
+        }
+        /// <summary>
+        /// Represents different states for events (In-Game or Freeroam)
+        /// </summary>
+        private static class EventStates
+        {
+            public const string Launched = "/event/launched";
+            public const string Arbitration = "/event/arbitration";
+            public const string GetTreasureHuntEventSession = "/events/gettreasurehunteventsession";
+            public const string NotifyCoinCollected = "/events/notifycoincollected";
+        }
+        /// <summary>
+        /// Represents different states for Matchmaking (Before or Triggering an In-Game Event)
+        /// </summary>
+        private static class MatchmakingStates
+        {
+            public const string LeaveLobby = "/matchmaking/leavelobby";
+            public const string DeclineInvite = "/matchmaking/declineinvite";
+            public const string LeaveQueue = "/matchmaking/leavequeue";
+            public const string AcceptInvite = "/matchmaking/acceptinvite";
+            public const string JoinQueueRaceNow = "/matchmaking/joinqueueracenow";
+            public const string LaunchEvent = "/matchmaking/launchevent";
+        }
+        /// <summary>
+        /// Represents different states within the safehouse
+        /// </summary>
+        private static class SafehouseStates
         {
             public const string Vinyls = "categoryName=NFSW_NA_EP_VINYLS_Category";
             public const string PerformanceParts = "clientProductType=PERFORMANCEPART";
@@ -82,7 +109,6 @@ namespace SBRW.Launcher.Core.Discord.RPC_
                 public const string v1 = "categoryName=BoosterPacks";
             }
         }
-
         /// <summary>
         /// Game Status State
         /// </summary>
@@ -101,60 +127,60 @@ namespace SBRW.Launcher.Core.Discord.RPC_
                 // Use a switch expression or pattern matching for cleaner URI handling
                 switch (uri)
                 {
-                    case UserSecureLoginPersonaUri:
+                    case UserStates.SecureLoginPersona:
                         LoggedPersonaId = queryParams.Split(';').Last().Split('=').Last();
                         CanUpdateProfileField = true;
                         break;
-                    case UserSecureLogoutPersonaUri:
+                    case UserStates.SecureLogoutPersona:
                         ResetPersonaData();
                         break;
-                    case UserGetPermanentSessionUri:
+                    case UserStates.GetPermanentSession:
                         ParsePermanentSession(serverReply);
                         break;
-                    case DriverPersonaCreatePersonaUri:
+                    case DriverPersonaStates.CreatePersona:
                         ParseCreatePersona(serverReply);
                         break;
-                    case DriverPersonaGetPersonaInfoUri:
+                    case DriverPersonaStates.GetPersonaInfo:
                         if (CanUpdateProfileField && LoggedPersonaId == queryParams.Split(';').Last().Split('=').Last())
                         {
                             ParsePersonaInfo(serverReply);
                         }
                         break;
-                    case EventsGetTreasureHuntEventSessionUri:
+                    case EventStates.GetTreasureHuntEventSession:
                         ParseTreasureHuntSession(serverReply);
                         break;
-                    case EventsNotifyCoinCollectedUri:
+                    case EventStates.NotifyCoinCollected:
                         HandleCoinCollection();
                         break;
-                    case DriverPersonaUpdatePersonaPresenceUri:
+                    case DriverPersonaStates.UpdatePersonaPresence:
                         HandlePersonaPresenceUpdate(queryParams.Split(';').Last().Split('=').Last());
                         break;
-                    case MatchmakingLeaveLobbyUri:
-                    case MatchmakingDeclineInviteUri:
-                    case MatchmakingLeaveQueueUri:
+                    case MatchmakingStates.LeaveLobby:
+                    case MatchmakingStates.DeclineInvite:
+                    case MatchmakingStates.LeaveQueue:
                         HandleLeaveMatchmaking(uri);
                         break;
-                    case MatchmakingAcceptInviteUri:
+                    case MatchmakingStates.AcceptInvite:
                         HandleAcceptInvite(serverReply);
                         break;
-                    case MatchmakingJoinQueueRaceNowUri:
+                    case MatchmakingStates.JoinQueueRaceNow:
                         HandleJoinQueueRaceNow();
                         break;
                 }
 
-                if (Regex.Match(uri, MatchmakingLaunchEventUriPattern).Success)
+                if (Regex.Match(uri, MatchmakingStates.LaunchEvent).Success)
                 {
                     HandleLaunchEvent(uri.Split('/'));
                 }
-                if (uri == EventLaunchedUri && Launcher_Value.Game_In_Event)
+                if (uri == EventStates.Launched && Launcher_Value.Game_In_Event)
                 {
                     HandleEventLaunched();
                 }
-                if (uri == EventArbitrationUri)
+                if (uri == EventStates.Arbitration)
                 {
                     HandleEventArbitration();
                 }
-                if (uri.Contains(CatalogUriContains) && InSafeHouse)
+                if (uri.Contains(CatalogUri) && InSafeHouse)
                 {
                     HandleSafehouseCatalog(queryParams);
                 }
@@ -186,7 +212,6 @@ namespace SBRW.Launcher.Core.Discord.RPC_
 
             return Task.CompletedTask;
         }
-
         /// <summary>
         /// Game Status State as a Task
         /// </summary>
@@ -212,7 +237,6 @@ namespace SBRW.Launcher.Core.Discord.RPC_
 
             return Task.CompletedTask;
         }
-
         /// <summary>
         /// Game Status State
         /// </summary>
@@ -249,7 +273,6 @@ namespace SBRW.Launcher.Core.Discord.RPC_
 
             return string.Join(";", parameters.Select(x => x.Key + "=" + x.Value).ToArray());
         }
-
         /// <summary>
         /// Updates the Discord buttons based on server links.
         /// </summary>
@@ -288,7 +311,6 @@ namespace SBRW.Launcher.Core.Discord.RPC_
                 });
             }
         }
-
         /// <summary>
         /// Resets persona-related data.
         /// </summary>
@@ -299,12 +321,10 @@ namespace SBRW.Launcher.Core.Discord.RPC_
             PersonaLevel = string.Empty;
             PersonaAvatarId = string.Empty;
             Launcher_Value.Game_Car_Name = string.Empty;
-            LauncherRPC = string.Empty; // This might need review - should LauncherRPC be cleared?
             PersonaTreasure = 0;
             PersonaIds.Clear(); // Clear the list of persona IDs
             CanUpdateProfileField = false; // Reset this flag as well
         }
-
         /// <summary>
         /// Parses the XML reply for GetPermanentSession and updates persona data.
         /// </summary>
@@ -338,7 +358,6 @@ namespace SBRW.Launcher.Core.Discord.RPC_
                 Log_Detail.Full("DISCORD GAME PRESENCE [ParsePermanentSession]", ex);
             }
         }
-
         /// <summary>
         /// Parses the XML reply for CreatePersona and adds the new persona ID.
         /// </summary>
@@ -359,7 +378,6 @@ namespace SBRW.Launcher.Core.Discord.RPC_
                 Log_Detail.Full("DISCORD GAME PRESENCE [ParseCreatePersona]", ex);
             }
         }
-
         /// <summary>
         /// Parses the XML reply for GetPersonaInfo and updates persona data.
         /// </summary>
@@ -386,7 +404,6 @@ namespace SBRW.Launcher.Core.Discord.RPC_
                 Log_Detail.Full("DISCORD GAME PRESENCE [ParsePersonaInfo]", ex);
             }
         }
-
         /// <summary>
         /// Parses the XML reply for Treasure Hunt event session.
         /// </summary>
@@ -419,7 +436,6 @@ namespace SBRW.Launcher.Core.Discord.RPC_
                 Log_Detail.Full("DISCORD GAME PRESENCE [ParseTreasureHuntSession]", ex);
             }
         }
-
         /// <summary>
         /// Handles updates when a coin is collected in Treasure Hunt.
         /// </summary>
@@ -444,7 +460,6 @@ namespace SBRW.Launcher.Core.Discord.RPC_
 
             Treasure_Hunt_Start();
         }
-
         /// <summary>
         /// Handles updates for persona presence (safehouse/freeroam).
         /// </summary>
@@ -487,7 +502,6 @@ namespace SBRW.Launcher.Core.Discord.RPC_
                 smallImageKey: smallImageKey
             );
         }
-
         /// <summary>
         /// Handles updates when leaving matchmaking or declining an invite.
         /// </summary>
@@ -505,14 +519,13 @@ namespace SBRW.Launcher.Core.Discord.RPC_
                 smallImageKey: "gamemode_freeroam"
             );
 
-            if (uri == MatchmakingLeaveLobbyUri)
+            if (uri == MatchmakingStates.LeaveLobby)
             {
                 AC_Core.Stop(false);
             }
 
             Launcher_Value.Game_In_Event = false;
         }
-
         /// <summary>
         /// Handles updates when accepting a matchmaking invite.
         /// </summary>
@@ -546,7 +559,6 @@ namespace SBRW.Launcher.Core.Discord.RPC_
                 Log_Detail.Full("DISCORD GAME PRESENCE [HandleAcceptInvite]", ex);
             }
         }
-
         /// <summary>
         /// Handles updates when joining a queue for a race.
         /// </summary>
@@ -565,7 +577,6 @@ namespace SBRW.Launcher.Core.Discord.RPC_
                 smallImageKey: "gamemode_freeroam"
             );
         }
-
         /// <summary>
         /// Handles updates when launching an event.
         /// </summary>
@@ -586,7 +597,6 @@ namespace SBRW.Launcher.Core.Discord.RPC_
                 smallImageKey: EventID.Get_Type_Event()
             );
         }
-
         /// <summary>
         /// Handles updates when an event has launched.
         /// </summary>
@@ -605,7 +615,6 @@ namespace SBRW.Launcher.Core.Discord.RPC_
 
             AC_Core.Start(Launcher_Value.Launcher_Select_Server_JSON.Server_Enable_Crew_Tags, true, 0, EventID);
         }
-
         /// <summary>
         /// Handles updates when an event has finished.
         /// </summary>
@@ -625,41 +634,40 @@ namespace SBRW.Launcher.Core.Discord.RPC_
             AC_Core.Stop(true);
             Launcher_Value.Game_In_Event = true;
         }
-
         /// <summary>
         /// Handles updates for different states within the safehouse catalog.
         /// </summary>
         /// <param name="getParamContent">The GET parameter content.</param>
         private static void HandleSafehouseCatalog(string getParamContent)
         {
-            if (getParamContent.Contains(SafehouseCatalogStates.Vinyls))
+            if (getParamContent.Contains(SafehouseStates.Vinyls))
             {
                 Server_Presence.Details = "In Safehouse - Applying Vinyls";
             }
-            else if (getParamContent.Contains(SafehouseCatalogStates.Paints.Section) ||
-                getParamContent.Contains(SafehouseCatalogStates.Paints.Body) ||
-                getParamContent.Contains(SafehouseCatalogStates.Paints.Wheel))
+            else if (getParamContent.Contains(SafehouseStates.Paints.Section) ||
+                getParamContent.Contains(SafehouseStates.Paints.Body) ||
+                getParamContent.Contains(SafehouseStates.Paints.Wheel))
             {
                 Server_Presence.Details = "In Safehouse - Applying Paint Colors";
             }
-            else if (getParamContent.Contains(SafehouseCatalogStates.PerformanceParts))
+            else if (getParamContent.Contains(SafehouseStates.PerformanceParts))
             {
                 Server_Presence.Details = "In Safehouse - Applying Performance Parts";
             }
-            else if (getParamContent.Contains(SafehouseCatalogStates.VisualParts))
+            else if (getParamContent.Contains(SafehouseStates.VisualParts))
             {
                 Server_Presence.Details = "In Safehouse - Applying Visual Parts";
             }
-            else if (getParamContent.Contains(SafehouseCatalogStates.Skillmods))
+            else if (getParamContent.Contains(SafehouseStates.Skillmods))
             {
                 Server_Presence.Details = "In Safehouse - Applying Skillmods";
             }
-            else if (getParamContent.Contains(SafehouseCatalogStates.CarDealership))
+            else if (getParamContent.Contains(SafehouseStates.CarDealership))
             {
                 Server_Presence.Details = "In Safehouse - Car Dealership";
             }
-            else if (getParamContent.Contains(SafehouseCatalogStates.BoosterPacks.v2) ||
-                getParamContent.Contains(SafehouseCatalogStates.BoosterPacks.v1))
+            else if (getParamContent.Contains(SafehouseStates.BoosterPacks.v2) ||
+                getParamContent.Contains(SafehouseStates.BoosterPacks.v1))
             {
                 Server_Presence.Details = "In Safehouse - Opening Cardpacks";
             }
@@ -676,7 +684,6 @@ namespace SBRW.Launcher.Core.Discord.RPC_
                 smallImageKey: "gamemode_safehouse"
             );
         }
-
         /// <summary>
         /// Updates the car name from the provided car slots XML.
         /// </summary>
@@ -708,7 +715,6 @@ namespace SBRW.Launcher.Core.Discord.RPC_
                 Log_Detail.Full("DISCORD GAME PRESENCE [UpdateCarNameFromCarSlots]", ex);
             }
         }
-
         /// <summary>
         /// Updates the default car name based on a received car ID.
         /// </summary>
@@ -742,7 +748,6 @@ namespace SBRW.Launcher.Core.Discord.RPC_
                 Log_Detail.Full("DISCORD GAME PRESENCE [UpdateDefaultCarName]", ex);
             }
         }
-
         /// <summary>
         /// Centralized method to update and set Discord Presence.
         /// </summary>
@@ -773,7 +778,11 @@ namespace SBRW.Launcher.Core.Discord.RPC_
                 Presence_Launcher.User_Details();
             }
         }
-
+        /// <summary>
+        /// Treasure Hunt elapsed timer
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private static void OnTreasureHuntTimerElapsed(object sender, ElapsedEventArgs e)
         {
             try
@@ -804,7 +813,6 @@ namespace SBRW.Launcher.Core.Discord.RPC_
                 Treasure_Hunt_Stop();
             }
         }
-
         /// <summary>
         /// Stops the Treasure Hunt timer.
         /// </summary>
@@ -824,7 +832,6 @@ namespace SBRW.Launcher.Core.Discord.RPC_
                 Log_Detail.Full("DISCORD GAME PRESENCE [TIMER STOP]", error);
             }
         }
-
         /// <summary>
         /// Starts or restarts the Treasure Hunt timer.
         /// </summary>

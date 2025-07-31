@@ -1,13 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>netstandard2.0;net6.0-windows;net8.0-windows;net461;net472</TargetFrameworks>
+		<TargetFrameworks>netstandard2.0;net6.0-windows;net8.0-windows;net461;net472;net48;net481</TargetFrameworks>
 		<LangVersion>8.0</LangVersion>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<Authors>Soapbox Race World - Launcher Division</Authors>
 		<Company>Soapbox Race World</Company>
 		<PackageProjectUrl>https://github.com/DavidCarbon-SBRW/SBRW.Launcher.Core.Discord</PackageProjectUrl>
-		<Version>0.6.2</Version>
+		<Version>0.7.0</Version>
 		<Description>A Game Launchers Discord RPC Library built within the .NET Standard Framework</Description>
 		<RepositoryType>git</RepositoryType>
 		<PackageTags>Discord, RPC</PackageTags>
@@ -40,7 +40,7 @@
 	<ItemGroup>
 		<PackageReference Include="DiscordRichPresence" Version="1.4.1.37" />
 		<PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
-		<PackageReference Include="SBRW.Launcher.Core" Version="0.6.0" />
+		<PackageReference Include="SBRW.Launcher.Core" Version="0.7.0" />
 	</ItemGroup>
 
 	<ItemGroup>
