@@ -35,7 +35,7 @@ namespace SBRW.Launcher.Core.Discord.RPC_
         private static int THDay { get; set; }
         private static List<string> PersonaIds { get; set; } = new List<string>();
         private static bool _treasureHuntTimerStarted { get; set; }
-        private static System.Timers.Timer _treasureHuntTimer;
+        private static System.Timers.Timer _treasureHuntTimer { get; set; }
         /// <summary>
         /// Time in Milliseconds (1 Min.)
         /// </summary>
